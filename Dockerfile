@@ -15,4 +15,8 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+ENV DISCORD_TOKEN ""
+ENV REDIS_URL ""
+ENV YOUTUBE_API_KEY ""
+
 CMD [ "npm start" ]
