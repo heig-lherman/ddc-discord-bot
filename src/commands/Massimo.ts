@@ -2,9 +2,9 @@ import { Command } from '../framework';
 
 export default new Command({
   enabled: true,
-  name: 'alex',
+  name: 'massimo',
   description: 'Only the truth.',
   async handle({ message }) {
-    message.channel.send('Alex tais toi 😡 !');
+    message.channel.send('Massimo tais toi 😡 !');
   },
 });
