@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:16-alpine
 ENV NODE_ENV=production
 
 WORKDIR /app
@@ -8,15 +8,14 @@ WORKDIR /app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+RUN npm i -g typescript
+RUN npm ci --only=production
 
 # Bundle app source
 COPY . .
+RUN npm run build
 
 ENV DISCORD_TOKEN ""
 ENV REDIS_URL ""
-ENV YOUTUBE_API_KEY ""
 
-CMD [ "npm start" ]
+CMD ["node", "build/src/bot.js"]
