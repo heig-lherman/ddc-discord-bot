@@ -1,5 +1,4 @@
 FROM node:16-alpine
-ENV NODE_ENV=production
 
 WORKDIR /app
 
@@ -8,11 +7,15 @@ WORKDIR /app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm i -g typescript
-RUN npm ci --only=production
+RUN npm ci
+
+ENV NODE_ENV=production
 
 # Bundle app source
-COPY . .
+COPY data ./data
+COPY src ./src
+COPY tsconfig*.json ./
+
 RUN npm run build
 
 ENV DISCORD_TOKEN ""
