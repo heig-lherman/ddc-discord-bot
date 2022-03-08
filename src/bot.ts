@@ -1,11 +1,17 @@
-import path from 'path';
-
 import 'make-promises-safe';
-import * as Dotenv from 'dotenv';
+import 'dotenv/config';
+import path from 'path';
+import { initializeApp, credential } from 'firebase-admin';
 
 import { Bot } from './framework';
 
-Dotenv.config();
+initializeApp({
+    credential: credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    })
+});
 
 export const bot = new Bot({
   token: process.env.DISCORD_TOKEN,
@@ -15,5 +21,5 @@ export const bot = new Bot({
 });
 
 bot.start().then(() => {
-  bot.logger.info('Bot started');
+    bot.logger.info('Bot started');
 });
