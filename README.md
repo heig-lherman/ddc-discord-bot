@@ -1,4 +1,4 @@
-# Pipou bot
+# Heig - Délégué de classe bot
 
 ## Development
 
