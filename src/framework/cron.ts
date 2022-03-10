@@ -1,9 +1,9 @@
-import {v4 as uuid} from '@lukeed/uuid';
-import {CronJob, CronTime} from 'cron';
-import {Client} from 'discord.js';
-import {Logger} from 'pino';
-import {Base, BaseConfig} from './Base';
-import {Bot} from './Bot';
+import { v4 as uuid } from '@lukeed/uuid';
+import { CronJob, CronTime } from 'cron';
+import { Client } from 'discord.js';
+import { Logger } from 'pino';
+import { Base, BaseConfig } from './Base';
+import { Bot } from './Bot';
 
 export type CronHandler = (context: CronContext) => Promise<void>;
 
@@ -36,7 +36,9 @@ export interface CronContext {
 
 export class Cron extends Base {
     private readonly schedule: string;
+
     private readonly handler: CronHandler;
+
     private cronJob: CronJob | undefined;
 
     public constructor(config: CronConfig) {
@@ -62,7 +64,7 @@ export class Cron extends Base {
         });
         try {
             logger.debug('execute cron handler');
-            await this.handler({date, client: bot.client, logger});
+            await this.handler({ date, client: bot.client, logger });
         } catch (error: any) {
             logger.error(error, 'cron handler error');
         }

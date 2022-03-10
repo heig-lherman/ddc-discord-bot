@@ -1,9 +1,11 @@
-import {promisify} from 'node:util';
-import {createClient, RedisClientType} from 'redis';
+import { promisify } from 'node:util';
+import { createClient, RedisClientType } from 'redis';
 
 class Redis {
     public get: (key: string) => Promise<string | undefined>;
+
     public set: (key: string, value: string) => Promise<unknown>;
+
     public setEx: (
         key: string,
         seconds: number,
@@ -11,6 +13,7 @@ class Redis {
     ) => Promise<string>;
 
     public keys: (pattern: string) => Promise<string[]>;
+
     public scan: (
         cursor: string,
         options: string[],

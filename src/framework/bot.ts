@@ -1,14 +1,14 @@
-import {once} from 'node:events';
+import { once } from 'node:events';
 import fs from 'node:fs';
 import path from 'node:path';
-import {Client} from 'discord.js';
-import {GatewayIntentBits} from 'discord-api-types/v10';
+import { Client } from 'discord.js';
+import { GatewayIntentBits } from 'discord-api-types/v10';
 import pino from 'pino';
-import {Base, BaseConfig} from './base';
+import { Base, BaseConfig } from './base';
 
-import {Command, PublicCommand} from './command';
-import {Cron} from './cron';
-import {FormatChecker} from './format-checker';
+import { Command, PublicCommand } from './command';
+import { Cron } from './cron';
+import { FormatChecker } from './format-checker';
 
 export interface BotOptions {
     /**
@@ -36,9 +36,13 @@ export class Bot {
     public readonly logger: pino.Logger;
 
     private readonly token?: string;
+
     private _client: Client | undefined;
+
     private readonly _commands: Command[] = [];
+
     private readonly _crons: Cron[] = [];
+
     private readonly _formatCheckers: FormatChecker[] = [];
 
     public constructor(options: BotOptions = {}) {
@@ -148,7 +152,7 @@ export class Bot {
         try {
             list = fs.readdirSync(directory);
         } catch (error: unknown) {
-            if ((error as {code: string}).code === 'ENOENT') {
+            if ((error as { code: string }).code === 'ENOENT') {
                 throw new Error(
                     `Failed to load "${name}" in ${directory}. Directory could not be read`,
                 );

@@ -21,10 +21,12 @@ export class Base {
      * Whether the feature is enabled.
      */
     public readonly enabled: boolean;
+
     /**
      * Name of the feature.
      */
     public readonly name: string;
+
     /**
      * Description of the feature.
      */

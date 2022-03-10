@@ -1,9 +1,9 @@
-import {v4 as uuid} from '@lukeed/uuid';
-import {Message} from 'discord.js';
-import {Logger} from 'pino';
-import {Base, BaseConfig} from './Base';
-import {Bot} from './Bot';
-import {findTextChannelByName} from './helpers';
+import { v4 as uuid } from '@lukeed/uuid';
+import { Message } from 'discord.js';
+import { Logger } from 'pino';
+import { Base, BaseConfig } from './Base';
+import { Bot } from './Bot';
+import { findTextChannelByName } from './helpers';
 
 export type CommandHandler = (context: CommandContext) => Promise<void>;
 
@@ -36,8 +36,11 @@ export class Command extends Base {
     }
 
     private readonly _alias?: string[];
+
     private readonly channelName?: string;
+
     private readonly handler: CommandHandler;
+
     private bot: Bot | undefined;
 
     public constructor(config: CommandConfig) {
@@ -73,7 +76,7 @@ export class Command extends Base {
             return;
         }
 
-        const {client} = this.bot;
+        const { client } = this.bot;
         if (
             this.channelName &&
             message.channel.id !==
@@ -89,7 +92,7 @@ export class Command extends Base {
         });
 
         try {
-            await this.handler({message, logger});
+            await this.handler({ message, logger });
         } catch (error: any) {
             logger.fatal('Error in Command');
             logger.fatal(error);

@@ -1,9 +1,9 @@
-import {Message} from 'discord.js';
+import { Message } from 'discord.js';
 import uuid from '@lukeed/uuid';
-import {Logger} from 'pino';
-import {Base, BaseConfig} from './Base';
-import {Bot} from './Bot';
-import {findTextChannelByName} from './helpers';
+import { Logger } from 'pino';
+import { Base, BaseConfig } from './Base';
+import { Bot } from './Bot';
+import { findTextChannelByName } from './helpers';
 
 type FunctionChecker = (message: string, logger: Logger) => boolean;
 
@@ -15,7 +15,9 @@ export interface FormatCheckerConfig extends BaseConfig {
 
 export class FormatChecker extends Base {
     private readonly channelName: string;
+
     private readonly checker: RegExp | FunctionChecker;
+
     private readonly examples?: string[];
 
     private bot: Bot | undefined;
@@ -38,7 +40,7 @@ export class FormatChecker extends Base {
     async _messageHandler(message: Message): Promise<void> {
         console.log('hello lé amis');
         if (this.bot === undefined) return;
-        const {client} = this.bot;
+        const { client } = this.bot;
         if (
             message.channel.id !==
             findTextChannelByName(client, this.channelName)?.id
@@ -61,7 +63,7 @@ export class FormatChecker extends Base {
 
         logger.debug('bad format detected');
 
-        const {cleanContent, author} = message;
+        const { cleanContent, author } = message;
 
         await message.delete();
         const warningContent = [
