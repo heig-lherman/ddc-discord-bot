@@ -1,53 +1,64 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, ErrorEmbed, isNumber, shuffle } from '../framework';
+import { Command, errorEmbed, isNumber, shuffle } from '../framework';
 
 export default new Command({
-  enabled: true,
-  name: 'group',
-  description: 'Create random groups from a list of names.',
-  async handle({ message }) {
-    const names = message.content.split(/ +/).slice(1);
-    const strSize = names.pop();
+    enabled: true,
+    name: 'group',
+    description: 'Create random groups from a list of names.',
+    async handle({ message }) {
+        const names = message.content.split(/ +/).slice(1);
+        const strSize = names.pop();
 
-    if (!isNumber(strSize)) {
-      message.channel.send(
-        ErrorEmbed(
-          'Invalid format, example: ``!group Joe Bob Dany Mélissandre 2``',
-        ),
-      );
-      return;
-    }
+        if (!isNumber(strSize)) {
+            message.channel.send({
+                embeds: [
+                    errorEmbed(
+                        'Invalid format, example: ``!group Joe Bob Dany Mélissandre 2``',
+                    ),
+                ],
+            });
+            return;
+        }
 
-    const size = Number(strSize);
-    if (names.length < size || size <= 0) {
-      message.channel.send(
-        ErrorEmbed(`Size is invalid you dumbo: [1, ${names.length}]`),
-      );
-      return;
-    }
+        const size = Number(strSize);
+        if (names.length < size || size <= 0) {
+            message.channel.send({
+                embeds: [
+                    errorEmbed(
+                        `Size is invalid you dumbo: [1, ${names.length}]`,
+                    ),
+                ],
+            });
+            return;
+        }
 
-    const embed = new MessageEmbed()
-      .setColor('#EA580C')
-      .setTitle('🎡 **Random Groups** 🎡');
-    const shuffled = shuffle(names);
-    const description = [];
+        const embed = new MessageEmbed()
+            .setColor('#EA580C')
+            .setTitle('🎡 **Random Groups** 🎡');
+        const shuffled = shuffle(names);
+        const description = [];
 
-    let i = 0;
-    let group = 0;
-    for (const name of shuffled) {
-      if (i++ % size === 0) {
-        description.push(`\n**Group ${++group}**`);
-      }
-      description.push(name);
-    }
+        let i = 0;
+        let group = 0;
+        for (const name of shuffled) {
+            if (i++ % size === 0) {
+                description.push(`\n**Group ${++group}**`);
+            }
+            description.push(name);
+        }
 
-    embed.setDescription(description.join('\n'));
-    embed.setFooter(
-      `Groups created randomly at ${new Date().toLocaleTimeString('en-GB', {
-        timeZone: 'Europe/Zurich',
-      })}.`,
-    );
+        embed.setDescription(description.join('\n'));
+        embed.setFooter(
+            `Groups created randomly at ${new Date().toLocaleTimeString(
+                'en-GB',
+                {
+                    timeZone: 'Europe/Zurich',
+                },
+            )}.`,
+        );
 
-    message.channel.send(embed);
-  },
+        message.channel.send({
+            embeds: [embed],
+        });
+    },
 });

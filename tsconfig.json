@@ -1,19 +1,46 @@
 {
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["esnext", "dom"],
-    "strict": true,
-    "outDir": "build",
-    "moduleResolution": "node",
-    "module": "CommonJS",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "rootDir": "./",
-    "baseUrl": "./",
-    "paths": {
-      "#src/*": ["./src/*"]
-    },
-    "typeRoots": ["./src/types", "./node_modules/@types"]
-  }
+    "include": [
+        "src/**/*.ts",
+        "tests/**/*.ts"
+    ],
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2020",
+        // Node.js 12
+        "lib": [
+            "esnext",
+            "dom"
+        ],
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "declaration": true,
+        "pretty": true,
+        "newLine": "lf",
+        "stripInternal": true,
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "noPropertyAccessFromIndexSignature": false,
+        "noEmitOnError": true,
+        "useDefineForClassFields": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "rootDir": "./",
+        "baseUrl": "./",
+        "paths": {
+            "#src/*": [
+                "./src/*"
+            ]
+        },
+        "typeRoots": [
+            "./src/types",
+            "./node_modules/@types"
+        ]
+    }
 }
