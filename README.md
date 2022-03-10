@@ -2,6 +2,9 @@
 
 ## Development
 
+## Docker
+[dacc4/heig-ddc-discord-bot](https://hub.docker.com/repository/docker/dacc4/heig-ddc-discord-bot) on docker hub
+
 ### Prerequisites
 
 - Node.js v14
