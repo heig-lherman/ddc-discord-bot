@@ -29,8 +29,11 @@
         "@typescript-eslint/no-use-before-define": [
             "error"
         ],
+        "class-methods-use-this": "off",
         "no-plusplus": "off",
+        "no-restricted-syntax": "off",
         "no-shadow": "off",
+        "no-underscore-dangle": "off",
         "@typescript-eslint/no-shadow": [
             "error"
         ],
@@ -55,7 +58,10 @@
                     ".ts",
                     ".json"
                 ]
-            }
+            },
+            "typescript": {},
+            "./scripts/eslint-plugin-import-resolver.js": {}
+
         },
         "import/extensions": [
             ".js",

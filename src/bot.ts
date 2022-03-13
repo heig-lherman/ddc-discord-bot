@@ -1,24 +1,96 @@
+import { container, LogLevel, SapphireClient } from '@sapphire/framework';
+import '@sapphire/plugin-editable-commands/register';
+import '@sapphire/plugin-hmr/register';
+import '@sapphire/plugin-logger/register';
+import { ScheduledTaskRedisStrategy } from '@sapphire/plugin-scheduled-tasks/register-redis';
+import dayjs from 'dayjs';
+import dayjsParser from 'dayjs-parser';
+import 'dayjs/locale/fr-ch';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import utc from 'dayjs/plugin/utc';
+import weekday from 'dayjs/plugin/weekday';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import { GatewayIntentBits } from 'discord-api-types/v10';
 import 'dotenv/config';
-import path from 'path';
-import { credential, initializeApp } from 'firebase-admin';
+import { cert, initializeApp } from 'firebase-admin/app';
+import { type Firestore, getFirestore } from 'firebase-admin/firestore';
+import IORedis, { type Redis } from 'ioredis';
 
-import { Bot } from './framework';
+dayjs.extend(utc);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekday);
+dayjs.extend(localizedFormat);
+dayjs.extend(dayjsParser);
 
 initializeApp({
-    credential: credential.cert({
+    credential: cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: process.env.FIREBASE_PRIVATE_KEY,
     }),
 });
 
-export const bot = new Bot({
-    token: process.env.DISCORD_TOKEN,
-    commands: path.join(__dirname, 'commands'),
-    crons: path.join(__dirname, 'crons'),
-    // formatCheckers: path.join(__dirname, 'format-checkers'),
+container.database = getFirestore();
+
+container.redisClient = new IORedis(process.env.REDIS_URL);
+const { host, port, password, db } = container.redisClient.options;
+
+const client = new SapphireClient({
+    defaultPrefix: '!',
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildEmojisAndStickers,
+        GatewayIntentBits.GuildIntegrations,
+        GatewayIntentBits.GuildWebhooks,
+        GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildScheduledEvents,
+        GatewayIntentBits.MessageContent,
+    ],
+    logger: {
+        level: LogLevel.Debug,
+    },
+    tasks: {
+        strategy: new ScheduledTaskRedisStrategy({
+            bull: {
+                redis: {
+                    host,
+                    port,
+                    password,
+                    db,
+                },
+                prefix: 'ddc.queue-',
+            },
+        }),
+    },
+    hmr: {
+        enabled: process.env.NODE_ENV === 'development',
+    },
 });
 
-bot.start().then(() => {
-    bot.logger.info('Bot started');
-});
+client
+    .login(process.env.DISCORD_TOKEN)
+    .then(() => {
+        client.logger.info('Successfully connected');
+        client.logger.debug(
+            'Loaded',
+            client.stores.get('commands').size,
+            'commands',
+        );
+        client.logger.debug(
+            'Loaded',
+            client.stores.get('scheduled-tasks').size,
+            'tasks',
+        );
+    })
+    // eslint-disable-next-line no-console
+    .catch(console.error);
+
+declare module '@sapphire/pieces' {
+    interface Container {
+        redisClient: Redis;
+        database: Firestore;
+    }
+}
