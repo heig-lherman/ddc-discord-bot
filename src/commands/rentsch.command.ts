@@ -22,6 +22,7 @@ import { type Message, MessageEmbed } from 'discord.js';
         'remove',
         'help',
         'import',
+        'export',
     ],
     enabled: true,
     runIn: 'GUILD_TEXT',
@@ -181,6 +182,34 @@ export default class RentschCommand extends SubCommandPluginCommand {
         await guildDb.set({ quotes }, { merge: true });
         message.channel.send({
             embeds: [successEmbed('Import successful.')],
+        });
+    }
+
+    public async export(message: Message) {
+        const { logger } = this.container;
+        if (!message.guild) {
+            logger.error('No guild');
+            return;
+        }
+
+        const guildDb = await getGuildCollection(message.guild);
+        const guildDbData = await guildDb.get();
+
+        const quotes: GuildDocument['quotes'] = {
+            rentsch: guildDbData.data()?.quotes?.rentsch ?? [],
+        };
+
+        message.channel.send({
+            content: '✅  Export successful',
+            files: [
+                {
+                    attachment: Buffer.from(
+                        JSON.stringify(quotes.rentsch, null, 2),
+                        'utf-8',
+                    ),
+                    name: 'rrh.json',
+                },
+            ],
         });
     }
 
