@@ -1,16 +1,21 @@
 import type { Homework } from '#src/database/GuildDocument';
 import { errorEmbed, successEmbed } from '#src/utils/embed-utils';
-import {
-    autoId,
-    getGuildCollection,
-    getGuildData,
-} from '#src/utils/firestore-utils';
+import { converter, getGuildCollection } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { SubCommandPluginCommand } from '@sapphire/plugin-subcommands';
 import dayjs from 'dayjs';
-import type { EmbedFieldData, Message } from 'discord.js';
-import { MessageEmbed, TextChannel } from 'discord.js';
+import {
+    type EmbedFieldData,
+    type Guild,
+    type Message,
+    MessageEmbed,
+    type TextChannel,
+} from 'discord.js';
+import type {
+    CollectionReference,
+    DocumentSnapshot,
+} from 'firebase-admin/firestore';
 
 @ApplyOptions<SubCommandPluginCommand.Options>({
     name: 'homework',
@@ -71,14 +76,13 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const guildDb = await getGuildData(message.guild);
-        const homeworks: Homework[] = guildDb.exists
-            ? guildDb
-                  .data()
-                  ?.homeworks.filter((hw) => hw.module === channelName) ?? []
-            : [];
+        const guildDb = await this.getHomeworkCollection(message.guild);
+        const homeworks = await guildDb
+            .where('module', '==', channelName)
+            .orderBy('date', 'asc')
+            .get();
 
-        if (!homeworks.length) {
+        if (homeworks.empty) {
             message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -94,7 +98,7 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
                 new MessageEmbed()
                     .setColor('#fad541')
                     .setTitle(`Homeworks for ${channelName}`)
-                    .addFields(...this.generateFieldData(homeworks)),
+                    .addFields(...this.generateEmbedFieldData(homeworks.docs)),
             ],
         });
     }
@@ -106,12 +110,10 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const guildDb = await getGuildData(message.guild);
-        const homeworks: Homework[] = guildDb.exists
-            ? guildDb.data()?.homeworks ?? []
-            : [];
+        const guildDb = await this.getHomeworkCollection(message.guild);
+        const homeworks = await guildDb.orderBy('date', 'asc').get();
 
-        if (!homeworks.length) {
+        if (homeworks.empty) {
             message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -127,7 +129,7 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
                 new MessageEmbed()
                     .setColor('#fad541')
                     .setTitle(`Homeworks for all channels`)
-                    .addFields(...this.generateFieldData(homeworks)),
+                    .addFields(...this.generateEmbedFieldData(homeworks.docs)),
             ],
         });
     }
@@ -146,27 +148,23 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
         const description = await args.rest('string');
 
         const homework: Homework = {
-            id: autoId(),
             module: channelName,
             description,
             date: dueDate.toISOString(),
         };
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
-        const homeworks: Homework[] = guildDbData.exists
-            ? guildDbData.data()?.homeworks ?? []
-            : [];
-        homeworks.push(homework);
-        await guildDb.set({ homeworks }, { merge: true });
+        const guildDb = await this.getHomeworkCollection(message.guild);
+        const doc = await guildDb.add(homework);
 
         message.channel.send({
             embeds: [
                 new MessageEmbed()
                     .setColor('#6CC070')
                     .setTitle(`Homework added for ${channelName}`)
-                    .setDescription(`ID: \`${homework.id}\``)
-                    .addFields(...this.generateFieldData([homework])),
+                    .setDescription(`ID: \`${doc.id}\``)
+                    .addFields(
+                        ...this.generateEmbedFieldData([await doc.get()]),
+                    ),
             ],
         });
     }
@@ -182,34 +180,33 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
         const dueDate = await args.pick('dayjs');
         const description = await args.rest('string');
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
-        const homeworks: Homework[] = guildDbData.exists
-            ? guildDbData.data()?.homeworks ?? []
-            : [];
+        const guildDb = await this.getHomeworkCollection(message.guild);
+        const homeworkRef = guildDb.doc(id);
 
-        const homework = homeworks.find((hw) => hw.id === id);
-        if (!homework) {
+        try {
+            await homeworkRef.update({
+                date: dueDate.toISOString(),
+                description,
+            });
+
+            const homework = await homeworkRef.get();
+            message.channel.send({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor('#6CC070')
+                        .setTitle(
+                            `Homework modified for ${homework.data()?.module}`,
+                        )
+                        .setDescription(`ID: \`${homeworkRef.id}\``)
+                        .addFields(...this.generateEmbedFieldData([homework])),
+                ],
+            });
+        } catch (e: unknown) {
+            logger.debug('[firestore] update error', e);
             message.channel.send({
                 embeds: [errorEmbed(`No homework found with ID ${id}`)],
             });
-            return;
         }
-
-        homework.date = dueDate?.toISOString() ?? homework.date;
-        homework.description = description || homework.description;
-
-        await guildDb.set({ homeworks }, { merge: true });
-
-        message.channel.send({
-            embeds: [
-                new MessageEmbed()
-                    .setColor('#6CC070')
-                    .setTitle(`Homework modified for ${homework.module}`)
-                    .setDescription(`ID: \`${homework.id}\``)
-                    .addFields(...this.generateFieldData([homework])),
-            ],
-        });
     }
 
     public async delete(message: Message, args: Args) {
@@ -221,38 +218,45 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
 
         const id = await args.pick('string');
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
-        const homeworks: Homework[] = guildDbData.exists
-            ? guildDbData.data()?.homeworks ?? []
-            : [];
+        const guildDb = await this.getHomeworkCollection(message.guild);
+        try {
+            await guildDb.doc(id).delete({
+                exists: true,
+            });
 
-        const index = homeworks.findIndex((hw) => hw.id === id);
-        if (index < 0) {
+            message.channel.send({
+                embeds: [
+                    successEmbed(`Homework with ID ${id} has been deleted.`),
+                ],
+            });
+        } catch (e: unknown) {
+            logger.debug('[firestore] delete error', e);
             message.channel.send({
                 embeds: [errorEmbed(`No homework found with ID ${id}`)],
             });
-            return;
         }
+    }
 
-        homeworks.splice(index, 1);
-        await guildDb.set({ homeworks }, { merge: true });
-
-        message.channel.send({
-            embeds: [successEmbed(`Homework with ID ${id} has been deleted.`)],
+    private generateEmbedFieldData(
+        hws: DocumentSnapshot<Homework>[],
+    ): EmbedFieldData[] {
+        return hws.map((hw, i) => {
+            return {
+                name: `${i + 1}. ${hw.data()?.module} - ${
+                    hw.data()?.description
+                }`,
+                value: `Due <t:${dayjs(hw.data()?.date).unix()}:R> (<t:${dayjs(
+                    hw.data()?.date,
+                ).unix()}:F>)\nID: \`${hw.id}\``,
+            };
         });
     }
 
-    private generateFieldData(hws: Homework[]): EmbedFieldData[] {
-        return hws
-            .sort((a, b) => a.date.localeCompare(b.date))
-            .map((hw, i) => {
-                return {
-                    name: `${i + 1}. ${hw.module} - ${hw.description}`,
-                    value: `Due <t:${dayjs(hw.date).unix()}:R> (<t:${dayjs(
-                        hw.date,
-                    ).unix()}:F>)\nID: \`${hw.id}\``,
-                };
-            });
+    private getHomeworkCollection(
+        guild: Guild,
+    ): Promise<CollectionReference<Homework>> {
+        return getGuildCollection(guild).then((c) =>
+            c.collection('homeworks').withConverter(converter<Homework>()),
+        );
     }
 }

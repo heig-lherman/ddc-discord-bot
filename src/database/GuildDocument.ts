@@ -4,7 +4,6 @@ export interface GuildDocument {
 }
 
 export interface Homework {
-    id: string;
     module: string;
     description: string;
     date: string;
