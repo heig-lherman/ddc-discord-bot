@@ -1,4 +1,4 @@
-import type { Homework } from '#src/database/GuildDocument';
+import type { GuildHomework } from '#src/database/guild-homework';
 import { errorEmbed, successEmbed } from '#src/utils/embed-utils';
 import { converter, getGuildCollection } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
@@ -57,7 +57,7 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
                         },
                         {
                             name: 'Delete homework',
-                            value: '!hw delete ID',
+                            value: '!hw delete homework-id',
                         },
                         {
                             name: 'Update homework',
@@ -147,7 +147,7 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
         const dueDate = await args.pick('dayjs');
         const description = await args.rest('string');
 
-        const homework: Homework = {
+        const homework: GuildHomework = {
             module: channelName,
             description,
             date: dueDate.toISOString(),
@@ -238,7 +238,7 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
     }
 
     private generateEmbedFieldData(
-        hws: DocumentSnapshot<Homework>[],
+        hws: DocumentSnapshot<GuildHomework>[],
     ): EmbedFieldData[] {
         return hws.map((hw, i) => {
             return {
@@ -254,9 +254,9 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
 
     private getHomeworkCollection(
         guild: Guild,
-    ): Promise<CollectionReference<Homework>> {
+    ): Promise<CollectionReference<GuildHomework>> {
         return getGuildCollection(guild).then((c) =>
-            c.collection('homeworks').withConverter(converter<Homework>()),
+            c.collection('homeworks').withConverter(converter<GuildHomework>()),
         );
     }
 }

@@ -1,4 +1,4 @@
-import type { GuildDocument } from '#src/database/GuildDocument';
+import type { GuildDocument } from '#src/database/guild-document';
 import { container } from '@sapphire/framework';
 import { randomBytes } from 'crypto';
 import type { Guild } from 'discord.js';
