@@ -191,7 +191,7 @@ export default class RentschCommand extends SubCommandPluginCommand {
                     .setColor('#725fde')
                     .setTitle('Quote commands')
                     .setDescription(
-                        'Manage homeworks for a channel. \n Alias: [hw, homework]',
+                        'Manage quotes from RRH. \n Alias: [rrh, rentsch]',
                     )
                     .addFields(
                         {
