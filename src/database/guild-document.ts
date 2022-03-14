@@ -1,6 +1,7 @@
 export interface GuildDocument {
-    counters: Record<string, number>;
+    counters: Record<CounterId, number>;
     quotes: Record<QuoteId, string[]>;
 }
 
+export type CounterId = 'beers';
 export type QuoteId = 'rentsch';

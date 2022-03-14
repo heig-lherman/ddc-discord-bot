@@ -2,13 +2,13 @@ FROM node:16-alpine as base
 
 WORKDIR /usr/src/app
 
-ENV CI=true
-ENV LOG_LEVEL=info
-ENV DISCORD_TOKEN=""
-ENV REDIS_URL=""
-ENV FIREBASE_PROJECT_ID=""
-ENV FIREBASE_CLIENT_EMAIL=""
-ENV FIREBASE_PRIVATE_KEY=""
+ENV CI=true \
+    LOG_LEVEL=info \
+    DISCORD_TOKEN="" \
+    REDIS_URL="" \
+    FIREBASE_PROJECT_ID="" \
+    FIREBASE_CLIENT_EMAIL="" \
+    FIREBASE_PRIVATE_KEY=""
 
 COPY --chown=node:node package-lock.json .
 COPY --chown=node:node package.json .
@@ -27,8 +27,8 @@ RUN npm run build
 
 FROM base AS runner
 
-ENV NODE_ENV="production"
-ENV NODE_OPTIONS="--enable-source-maps"
+ENV NODE_ENV="production" \
+    NODE_OPTIONS="--enable-source-maps"
 
 WORKDIR /usr/src/app
 
