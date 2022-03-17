@@ -6,12 +6,15 @@ const GUILDS: Snowflake[] = ['449970210053554206', '887670429760749569'];
 
 @ApplyOptions<ScheduledTask.Options>({
     cron: '0 4 * * 6',
+    enabled: true,
 })
 export default class InspirobotRemovalTask extends ScheduledTask {
     public override async run() {
         const { client } = this.container;
 
-        const guilds = await Promise.all(GUILDS.map(client.guilds.cache.get));
+        const guilds = await Promise.all(
+            GUILDS.map((sf) => client.guilds.cache.get(sf)),
+        );
         guilds.forEach((guild) =>
             guild
                 ?.fetchWebhooks()

@@ -15,6 +15,7 @@ const GUILDS: Snowflake[] = ['887670429760749569'];
 
 @ApplyOptions<ScheduledTask.Options>({
     cron: '0 10 * * 1-5',
+    enabled: true,
 })
 export default class CanteenMenuTask extends ScheduledTask {
     public override async run() {
@@ -26,7 +27,9 @@ export default class CanteenMenuTask extends ScheduledTask {
             return;
         }
 
-        const guilds = await Promise.all(GUILDS.map(client.guilds.cache.get));
+        const guilds = await Promise.all(
+            GUILDS.map((sf) => client.guilds.cache.get(sf)),
+        );
         guilds.forEach((guild) => {
             if (guild) {
                 this.handleGuildMenu(guild, menu).catch(logger.error);
@@ -45,17 +48,14 @@ export default class CanteenMenuTask extends ScheduledTask {
             return;
         }
 
-        const today = dayjs().locale('fr-CH');
+        const today = dayjs().locale('fr-ch');
 
         const embed = new MessageEmbed()
             .setColor('#EA580C')
-            .setTitle(`:fork_and_knife: Menus de ${today.format('dddd')}`)
+            .setTitle(`:fork_and_knife: Menus du ${today.format('dddd LL')}`)
             .setThumbnail(
                 'https://pbs.twimg.com/profile_images/1339474601097748480/PVp2lBhv_400x400.jpg',
-            )
-            .setFooter({
-                text: today.format('LLLL'),
-            });
+            );
 
         Object.entries(menu).forEach(([name, content]) => {
             const title = `\`\`\`Menu ${capitalize(name)}\`\`\``;
