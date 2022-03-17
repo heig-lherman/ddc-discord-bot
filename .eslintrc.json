@@ -33,7 +33,8 @@
         "no-plusplus": "off",
         "no-restricted-imports": ["error", {
             "paths": [
-                "firebase-admin"
+                "firebase-admin",
+                "firebase-admin/lib/*"
             ]
         }],
         "no-restricted-syntax": "off",

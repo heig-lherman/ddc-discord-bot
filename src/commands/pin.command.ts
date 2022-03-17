@@ -1,5 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command } from '@sapphire/framework';
+import { send } from '@sapphire/plugin-editable-commands';
 import type { Message } from 'discord.js';
 import { MessageEmbed } from 'discord.js';
 
@@ -27,7 +28,8 @@ export default class PinCommand extends Command {
                 pinned ? 'unpinned' : 'pinned'
             } by ${message.author.toString()}.`,
         });
-        message.channel.send({
+
+        await send(message, {
             embeds: [embed],
         });
     }

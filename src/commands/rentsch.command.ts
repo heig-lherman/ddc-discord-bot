@@ -1,6 +1,6 @@
-import type { GuildDocument } from '#src/database/guild-document';
+import type { GuildQuote } from '#src/database/guild-quote';
 import { errorEmbed, successEmbed } from '#src/utils/embed-utils';
-import { getGuildCollection, getGuildData } from '#src/utils/firestore-utils';
+import { converter, getGuildCollection } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import {
     fetch,
@@ -8,8 +8,14 @@ import {
     FetchResultTypes,
 } from '@sapphire/fetch';
 import type { Args } from '@sapphire/framework';
+import { reply, send } from '@sapphire/plugin-editable-commands';
 import { SubCommandPluginCommand } from '@sapphire/plugin-subcommands';
-import { type Message, MessageEmbed } from 'discord.js';
+import { Guild, type Message, MessageEmbed } from 'discord.js';
+import {
+    type CollectionReference,
+    FieldPath,
+    type Query,
+} from 'firebase-admin/firestore';
 
 @ApplyOptions<SubCommandPluginCommand.Options>({
     name: 'rentsch',
@@ -19,7 +25,7 @@ import { type Message, MessageEmbed } from 'discord.js';
         { input: 'get', default: true },
         'add',
         'edit',
-        'remove',
+        'delete',
         'help',
         'import',
         'export',
@@ -35,16 +41,27 @@ export default class RentschCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const guildData = await getGuildData(message.guild);
-        const rrhQuotes = guildData.data()?.quotes?.rentsch ?? [];
+        const quotesQuery = await this.getQuotesQuery(message.guild);
+        const size = await quotesQuery
+            .select(FieldPath.documentId())
+            .get()
+            .then((c) => c.docs.length);
 
-        const randomIndex = Math.floor(Math.random() * rrhQuotes.length);
-        const quote = rrhQuotes[randomIndex];
+        const randomIndex = Math.floor(Math.random() * size);
+        const quote = await quotesQuery.offset(randomIndex).limit(1).get();
+
+        if (quote.empty) {
+            await send(message, {
+                embeds: [errorEmbed('There are no quotes')],
+            });
+            return;
+        }
+
         const embed = new MessageEmbed()
-            .setDescription(quote)
-            .setFooter({ text: `© Rentsch - ID: ${randomIndex}` });
+            .setDescription(quote.docs[0].data().content)
+            .setFooter({ text: `© Rentsch - ID: ${quote.docs[0].id}` });
 
-        message.channel.send({
+        await send(message, {
             embeds: [embed],
         });
     }
@@ -58,22 +75,13 @@ export default class RentschCommand extends SubCommandPluginCommand {
 
         const content = await args.rest('string');
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
+        const quote: GuildQuote = { category: 'rentsch', content };
 
-        const quotes: GuildDocument['quotes'] = {
-            rentsch: [...(guildDbData.data()?.quotes?.rentsch ?? []), content],
-        };
-        await guildDb.set({ quotes }, { merge: true });
+        const quotesDb = await this.getQuotesCollection(message.guild);
+        const doc = await quotesDb.add(quote);
 
-        message.channel.send({
-            embeds: [
-                successEmbed(
-                    `Quote successfully added.\nID: ${
-                        quotes.rentsch.length - 1
-                    }`,
-                ),
-            ],
+        await send(message, {
+            embeds: [successEmbed(`Quote successfully added.\nID: ${doc.id}`)],
         });
     }
 
@@ -84,29 +92,39 @@ export default class RentschCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const id = await args.pick('number');
+        const id = await args.pick('string');
         const content = await args.rest('string');
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
-        const rrhQuotes = guildDbData.data()?.quotes?.rentsch ?? [];
+        const quotesDb = await this.getQuotesQuery(message.guild);
+        const quoteQueryRef = quotesDb.where(FieldPath.documentId(), '==', id);
 
-        if (!rrhQuotes[id]) {
-            message.channel.send({
-                embeds: [errorEmbed('Unknown quote ID.')],
+        try {
+            const quoteQuery = await quoteQueryRef.get();
+            if (quoteQuery.empty || !quoteQuery.docs[0].exists) {
+                await send(message, {
+                    embeds: [errorEmbed(`No quote found with ID ${id}`)],
+                });
+                return;
+            }
+
+            const quote = quoteQuery.docs[0];
+            await quote.ref.update({
+                content,
             });
+
+            await send(message, {
+                embeds: [
+                    successEmbed(`Quote ${quote.id} successfully edited.`),
+                ],
+            });
+
             return;
+        } catch (e: unknown) {
+            logger.debug('[firestore] update error', e);
+            await send(message, {
+                embeds: [errorEmbed(`No quote found with ID ${id}`)],
+            });
         }
-
-        rrhQuotes[id] = content;
-        const quotes: GuildDocument['quotes'] = {
-            rentsch: rrhQuotes,
-        };
-        await guildDb.set({ quotes }, { merge: true });
-
-        message.channel.send({
-            embeds: [successEmbed(`Quote #${id} successfully edited.`)],
-        });
     }
 
     public async delete(message: Message, args: Args) {
@@ -116,28 +134,38 @@ export default class RentschCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const id = await args.pick('number');
+        const id = await args.pick('string');
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
-        const rrhQuotes = guildDbData.data()?.quotes?.rentsch ?? [];
+        const quotesDb = await this.getQuotesQuery(message.guild);
+        const quoteQueryRef = quotesDb.where(FieldPath.documentId(), '==', id);
 
-        if (!rrhQuotes[id]) {
-            message.channel.send({
-                embeds: [errorEmbed('Unknown quote ID.')],
+        try {
+            const quoteQuery = await quoteQueryRef.get();
+            if (quoteQuery.empty || !quoteQuery.docs[0].exists) {
+                await send(message, {
+                    embeds: [errorEmbed(`No quote found with ID ${id}`)],
+                });
+                return;
+            }
+
+            const quote = quoteQuery.docs[0];
+            await quote.ref.delete({
+                exists: true,
             });
+
+            await send(message, {
+                embeds: [
+                    successEmbed(`Quote ${quote.id} successfully deleted.`),
+                ],
+            });
+
             return;
+        } catch (e: unknown) {
+            logger.debug('[firestore] update error', e);
+            await send(message, {
+                embeds: [errorEmbed(`No quote found with ID ${id}`)],
+            });
         }
-
-        rrhQuotes.splice(id, 1);
-        const quotes: GuildDocument['quotes'] = {
-            rentsch: rrhQuotes,
-        };
-        await guildDb.set({ quotes }, { merge: true });
-
-        message.channel.send({
-            embeds: [successEmbed(`Quote #${id} successfully deleted.`)],
-        });
     }
 
     public async import(message: Message) {
@@ -154,13 +182,7 @@ export default class RentschCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
-
-        const quotes: GuildDocument['quotes'] = {
-            rentsch: guildDbData.data()?.quotes?.rentsch ?? [],
-        };
-
+        const guildDb = await this.getQuotesCollection(message.guild);
         await Promise.all(
             message.attachments
                 .filter(
@@ -176,11 +198,19 @@ export default class RentschCommand extends SubCommandPluginCommand {
                     ),
                 ),
         ).then((allQuotes) =>
-            allQuotes.forEach((quoteFile) => quotes.rentsch.push(...quoteFile)),
+            Promise.all(
+                allQuotes.flatMap((quoteFile) =>
+                    quoteFile.map((content) =>
+                        guildDb.doc().set({
+                            category: 'rentsch',
+                            content,
+                        }),
+                    ),
+                ),
+            ),
         );
 
-        await guildDb.set({ quotes }, { merge: true });
-        message.channel.send({
+        await send(message, {
             embeds: [successEmbed('Import successful.')],
         });
     }
@@ -192,19 +222,19 @@ export default class RentschCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const guildDb = await getGuildCollection(message.guild);
-        const guildDbData = await guildDb.get();
+        const quotesQueryRef = await this.getQuotesQuery(message.guild);
+        const quotesQuery = await quotesQueryRef.get();
 
-        const quotes: GuildDocument['quotes'] = {
-            rentsch: guildDbData.data()?.quotes?.rentsch ?? [],
-        };
-
-        message.channel.send({
+        await send(message, {
             content: '✅  Export successful',
             files: [
                 {
                     attachment: Buffer.from(
-                        JSON.stringify(quotes.rentsch, null, 2),
+                        JSON.stringify(
+                            quotesQuery.docs.map((d) => d.data().content),
+                            null,
+                            2,
+                        ),
                         'utf-8',
                     ),
                     name: 'rrh.json',
@@ -214,7 +244,7 @@ export default class RentschCommand extends SubCommandPluginCommand {
     }
 
     public async help(message: Message) {
-        message.channel.send({
+        await reply(message, {
             embeds: [
                 new MessageEmbed()
                     .setColor('#725fde')
@@ -242,5 +272,19 @@ export default class RentschCommand extends SubCommandPluginCommand {
                     ),
             ],
         });
+    }
+
+    private getQuotesCollection(
+        guild: Guild,
+    ): Promise<CollectionReference<GuildQuote>> {
+        return getGuildCollection(guild).then((c) =>
+            c.collection('quotes').withConverter(converter<GuildQuote>()),
+        );
+    }
+
+    private getQuotesQuery(guild: Guild): Promise<Query<GuildQuote>> {
+        return this.getQuotesCollection(guild).then((qc) =>
+            qc.where('category', '==', 'rentsch'),
+        );
     }
 }
