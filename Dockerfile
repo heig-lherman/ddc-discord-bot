@@ -2,7 +2,8 @@ FROM node:16-alpine as base
 
 WORKDIR /usr/src/app
 
-ENV CI=true \
+ENV HUSKY=0 \
+    CI=true \
     LOG_LEVEL=info \
     DISCORD_TOKEN="" \
     REDIS_URL="" \
