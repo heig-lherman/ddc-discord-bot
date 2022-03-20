@@ -78,7 +78,7 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
 
         const guildDb = await this.getHomeworkCollection(message.guild);
         const homeworks = await guildDb
-            .where('module', '==', channelName)
+            .where('module', '==', message.channelId)
             .orderBy('date', 'asc')
             .get();
 
@@ -98,7 +98,9 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
                 new MessageEmbed()
                     .setColor('#fad541')
                     .setTitle(`Homeworks for ${channelName}`)
-                    .addFields(...this.generateEmbedFieldData(homeworks.docs)),
+                    .addFields(
+                        ...(await this.generateEmbedFieldData(homeworks.docs)),
+                    ),
             ],
         });
     }
@@ -129,7 +131,9 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
                 new MessageEmbed()
                     .setColor('#fad541')
                     .setTitle(`Homeworks for all channels`)
-                    .addFields(...this.generateEmbedFieldData(homeworks.docs)),
+                    .addFields(
+                        ...(await this.generateEmbedFieldData(homeworks.docs)),
+                    ),
             ],
         });
     }
@@ -141,14 +145,12 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
             return;
         }
 
-        const channelName = await args
-            .pick('guildTextChannel')
-            .then((c) => c.name);
+        const channel = await args.pick('guildTextChannel');
         const dueDate = await args.pick('dayjs');
         const description = await args.rest('string');
 
         const homework: GuildHomework = {
-            module: channelName,
+            module: channel.id,
             description,
             date: dueDate.toISOString(),
         };
@@ -160,10 +162,12 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
             embeds: [
                 new MessageEmbed()
                     .setColor('#6CC070')
-                    .setTitle(`Homework added for ${channelName}`)
+                    .setTitle(`Homework added for ${channel.name}`)
                     .setDescription(`ID: \`${doc.id}\``)
                     .addFields(
-                        ...this.generateEmbedFieldData([await doc.get()]),
+                        ...(await this.generateEmbedFieldData([
+                            await doc.get(),
+                        ])),
                     ),
             ],
         });
@@ -198,7 +202,9 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
                             `Homework modified for ${homework.data()?.module}`,
                         )
                         .setDescription(`ID: \`${homeworkRef.id}\``)
-                        .addFields(...this.generateEmbedFieldData([homework])),
+                        .addFields(
+                            ...(await this.generateEmbedFieldData([homework])),
+                        ),
                 ],
             });
         } catch (e: unknown) {
@@ -237,19 +243,28 @@ export default class HomeworkCommand extends SubCommandPluginCommand {
         }
     }
 
-    private generateEmbedFieldData(
+    private async generateEmbedFieldData(
         hws: DocumentSnapshot<GuildHomework>[],
-    ): EmbedFieldData[] {
-        return hws.map((hw, i) => {
-            return {
-                name: `${i + 1}. ${hw.data()?.module} - ${
-                    hw.data()?.description
-                }`,
-                value: `Due <t:${dayjs(hw.data()?.date).unix()}:R> (<t:${dayjs(
-                    hw.data()?.date,
-                ).unix()}:F>)\nID: \`${hw.id}\``,
-            };
-        });
+    ): Promise<EmbedFieldData[]> {
+        return Promise.all(
+            hws.map(async (hw, i) => {
+                const channelId = hw.data()?.module ?? '';
+                const channel = (await this.container.client.channels.fetch(
+                    channelId,
+                )) as TextChannel;
+
+                return {
+                    name: `${i + 1}. ${channel.name} - ${
+                        hw.data()?.description
+                    }`,
+                    value: `Due <t:${dayjs(
+                        hw.data()?.date,
+                    ).unix()}:R> (<t:${dayjs(
+                        hw.data()?.date,
+                    ).unix()}:F>)\nID: \`${hw.id}\``,
+                };
+            }),
+        );
     }
 
     private getHomeworkCollection(

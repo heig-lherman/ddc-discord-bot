@@ -1,5 +1,7 @@
+import type { Snowflake } from 'discord-api-types/globals';
+
 export interface GuildHomework {
-    module: string;
+    module: Snowflake;
     description: string;
     date: string;
 }
