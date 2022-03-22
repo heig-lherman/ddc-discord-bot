@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { BucketScope, Command } from '@sapphire/framework';
+import { Command } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 
 const sentences = [
@@ -19,9 +19,6 @@ const sentences = [
     name: 'massimo',
     description: 'Only the truth.',
     enabled: true,
-    cooldownLimit: 1,
-    cooldownDelay: 5000,
-    cooldownScope: BucketScope.Guild,
 })
 export default class MassimoCommand extends Command {
     public override async messageRun(message: Message) {
