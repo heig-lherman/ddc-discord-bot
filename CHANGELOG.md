@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.1.0...v1.2.0) (2022-03-24)
+
+
+### Features
+
+* **cmd:rrht:** add rentsch-time command ([ec7810d](https://github.com/Lutonite/heig-ddc-discord-bot/commit/ec7810db301522489f4ff53998df9e9355809366)), closes [#13](https://github.com/Lutonite/heig-ddc-discord-bot/issues/13)
+
+
+### Bug Fixes
+
+* **cmd:beers:** add ++ and -- aliases for funsies ([7671031](https://github.com/Lutonite/heig-ddc-discord-bot/commit/7671031adf9bb9ecb3a52691a47a1c37aae368e8))
+* **cmd:massimo:** drop cooldown ([c665263](https://github.com/Lutonite/heig-ddc-discord-bot/commit/c66526331db5f075d2c5d2422a755b7329304f0b)), closes [#12](https://github.com/Lutonite/heig-ddc-discord-bot/issues/12)
+
+
+### Others
+
+* **deps:** bump dependencies ([5f57c1c](https://github.com/Lutonite/heig-ddc-discord-bot/commit/5f57c1c0b40a801f6f5cfa1bd174d5f64a6238d8))
+
 ## [1.1.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.0.1...v1.1.0) (2022-03-20)
 
 
