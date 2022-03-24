@@ -1,5 +1,5 @@
 export interface GuildDocument {
-    counters: Record<CounterId, number>;
+    counters: Partial<Record<CounterId, number>>;
 }
 
-export type CounterId = 'beers';
+export type CounterId = 'beers' | 'rentschTime';
