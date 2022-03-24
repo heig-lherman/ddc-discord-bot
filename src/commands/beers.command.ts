@@ -2,6 +2,7 @@ import { successEmbed } from '#src/utils/embed-utils';
 import { getGuildCollection, getGuildData } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
+import { send } from '@sapphire/plugin-editable-commands';
 import { SubCommandPluginCommand } from '@sapphire/plugin-subcommands';
 import { Guild, Message, MessageEmbed } from 'discord.js';
 import { FieldValue } from 'firebase-admin/firestore';
@@ -17,7 +18,9 @@ const getCounterValue = async (guild: Guild): Promise<number> => {
     subCommands: [
         { input: 'get', default: true },
         { input: '+', output: 'plus' },
+        { input: '++', output: 'plus' },
         { input: '-', output: 'minus' },
+        { input: '--', output: 'minus' },
         { input: '=', output: 'set' },
         'help',
     ],
@@ -32,7 +35,7 @@ export default class BeersCommand extends SubCommandPluginCommand {
             return;
         }
 
-        message.channel.send({
+        await send(message, {
             embeds: [
                 new MessageEmbed()
                     .setColor('#f28e1c')
@@ -61,7 +64,7 @@ export default class BeersCommand extends SubCommandPluginCommand {
             { merge: true },
         );
 
-        message.channel.send({
+        await send(message, {
             embeds: [
                 successEmbed(
                     `Counter updated, new amount: ${await getCounterValue(
@@ -89,7 +92,7 @@ export default class BeersCommand extends SubCommandPluginCommand {
             { merge: true },
         );
 
-        message.channel.send({
+        await send(message, {
             embeds: [
                 successEmbed(
                     `Counter updated, new amount: ${await getCounterValue(
@@ -112,13 +115,13 @@ export default class BeersCommand extends SubCommandPluginCommand {
         const guildDb = await getGuildCollection(message.guild);
         await guildDb.set({ counters: { beers: amount } }, { merge: true });
 
-        message.channel.send({
+        await send(message, {
             embeds: [successEmbed(`Counter updated, new amount: ${amount}`)],
         });
     }
 
     public async help(message: Message) {
-        message.channel.send({
+        await send(message, {
             embeds: [
                 new MessageEmbed()
                     .setColor('#ffcb87')
@@ -131,11 +134,11 @@ export default class BeersCommand extends SubCommandPluginCommand {
                         },
                         {
                             name: 'Increment',
-                            value: '!beers +',
+                            value: '!beers ++',
                         },
                         {
                             name: 'Decrement',
-                            value: '!beers -',
+                            value: '!beers --',
                         },
                         {
                             name: 'Set specific',
