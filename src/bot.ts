@@ -1,3 +1,7 @@
+// eslint-disable-next-line import/order
+import 'dotenv/config';
+
+import { subscribeTwitchEvents } from '#src/utils/twitch-events';
 import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import '@sapphire/plugin-editable-commands/register';
 import '@sapphire/plugin-hmr/register';
@@ -10,10 +14,9 @@ import duration from 'dayjs/plugin/duration';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
-import weekday from 'dayjs/plugin/weekday';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import weekday from 'dayjs/plugin/weekday';
 import { GatewayIntentBits } from 'discord-api-types/v10';
-import 'dotenv/config';
 import { cert, initializeApp } from 'firebase-admin/app';
 import { type Firestore, getFirestore } from 'firebase-admin/firestore';
 import IORedis, { type Redis } from 'ioredis';
@@ -39,7 +42,7 @@ initializeApp({
 
 container.database = getFirestore();
 
-container.redisClient = new IORedis(process.env.REDIS_URL);
+container.redisClient = new IORedis(process.env.REDIS_URL ?? '');
 const { host, port, password, db } = container.redisClient.options;
 
 const client = new SapphireClient({
@@ -91,6 +94,8 @@ client
             client.stores.get('scheduled-tasks').size,
             'tasks',
         );
+
+        return subscribeTwitchEvents(client).catch(console.error);
     })
     // eslint-disable-next-line no-console
     .catch(console.error);
