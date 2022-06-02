@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.2.0...v1.3.0) (2022-06-02)
+
+
+### Features
+
+* **stream:** add twitch stream start notifications ([2443cb5](https://github.com/Lutonite/heig-ddc-discord-bot/commit/2443cb5899ad2a780c3af5185f92da191750fddf)), closes [#16](https://github.com/Lutonite/heig-ddc-discord-bot/issues/16)
+
+
+### Others
+
+* **deps:** bump dependencies ([7a6a70b](https://github.com/Lutonite/heig-ddc-discord-bot/commit/7a6a70b7175710976b292b65b6df72c406413117))
+* **deps:** bump dependencies ([07bfce9](https://github.com/Lutonite/heig-ddc-discord-bot/commit/07bfce9af28fb71b1fe4ae86cbd9ab2560a15190))
+* **deps:** bump deps ([d18d46d](https://github.com/Lutonite/heig-ddc-discord-bot/commit/d18d46d9af9057c233ae92e7e8a2753a58c96ce9))
+* **license:** fix author in license ([d2d8d96](https://github.com/Lutonite/heig-ddc-discord-bot/commit/d2d8d96c35cd114c481f0f67af71b669280a532e))
+* update the readme ([b75d802](https://github.com/Lutonite/heig-ddc-discord-bot/commit/b75d802d4faeae76aba6c9b4df0b32f7359c3b69))
+
 ## [1.2.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.1.0...v1.2.0) (2022-03-24)
 
 
