@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.3.1...v1.3.2) (2022-06-07)
+
+
+### Bug Fixes
+
+* **stream:** embed empty value ([1bacee3](https://github.com/Lutonite/heig-ddc-discord-bot/commit/1bacee397c14a755abf267a357d7302ecb624c9b))
+
 ### [1.3.1](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.3.0...v1.3.1) (2022-06-07)
 
 
