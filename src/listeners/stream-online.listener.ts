@@ -33,7 +33,7 @@ export default class StreamOnlineListener extends Listener {
             .addField('Titre', stream?.title ?? 'Aucun titre');
 
         if (game) {
-            embed.addField('Jeu', game.name);
+            embed.addField('Jeu', game.name ?? 'Aucun jeu');
             embed.setThumbnail(game.boxArtUrl);
         }
 
