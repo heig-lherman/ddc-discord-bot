@@ -9,7 +9,10 @@ ENV HUSKY=0 \
     REDIS_URL="" \
     FIREBASE_PROJECT_ID="" \
     FIREBASE_CLIENT_EMAIL="" \
-    FIREBASE_PRIVATE_KEY=""
+    FIREBASE_PRIVATE_KEY="" \
+    TWITCH_CLIENT_ID="" \
+    TWITCH_CLIENT_SECRET="" \
+    TWITCH_SUBSCRIPTION_SECRET=""
 
 COPY --chown=node:node package-lock.json .
 COPY --chown=node:node package.json .

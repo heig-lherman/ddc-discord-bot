@@ -3,10 +3,14 @@ import { ApiClient } from '@twurple/api';
 import { ClientCredentialsAuthProvider } from '@twurple/auth';
 import { EventSubListener, ReverseProxyAdapter } from '@twurple/eventsub';
 import type { EventSubStreamOnlineEvent } from '@twurple/eventsub/lib/events/EventSubStreamOnlineEvent';
-import { randomBytes } from 'crypto';
 
-const TWITCH_USER_IDS = ['756569499'];
-const SUBSCRIPTION_SECRET: string = randomBytes(48).toString('hex');
+const TWITCH_USER_IDS = ['81936976', '756569499', '538667021'];
+const SUBSCRIPTION_SECRET: string | undefined =
+    process.env.TWITCH_SUBSCRIPTION_SECRET;
+
+if (!SUBSCRIPTION_SECRET) {
+    throw new Error('Missing TWITCH_SUBSCRIPTION_SECRET');
+}
 
 export const twitchAuthProvider = new ClientCredentialsAuthProvider(
     process.env.TWITCH_CLIENT_ID ?? '',
@@ -24,6 +28,7 @@ export const twitchEventSubListener = new EventSubListener({
         port: 1042,
     }),
     secret: SUBSCRIPTION_SECRET,
+    strictHostCheck: true,
 });
 
 export const subscribeTwitchEvents = async (client: SapphireClient) => {

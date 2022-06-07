@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/order
 import 'dotenv/config';
 
+import dayjsParser from '#src/utils/dayjs-parser';
 import { subscribeTwitchEvents } from '#src/utils/twitch-events';
 import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import '@sapphire/plugin-editable-commands/register';
@@ -8,7 +9,6 @@ import '@sapphire/plugin-hmr/register';
 import '@sapphire/plugin-logger/register';
 import { ScheduledTaskRedisStrategy } from '@sapphire/plugin-scheduled-tasks/register-redis';
 import dayjs from 'dayjs';
-import dayjsParser from 'dayjs-parser';
 import 'dayjs/locale/fr-ch';
 import duration from 'dayjs/plugin/duration';
 import localizedFormat from 'dayjs/plugin/localizedFormat';

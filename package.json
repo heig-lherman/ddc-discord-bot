@@ -17,11 +17,11 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@discordjs/builders": "^0.13.0",
-        "@discordjs/rest": "^0.4.1",
+        "@discordjs/builders": "^0.15.0",
+        "@discordjs/rest": "^0.5.0",
         "@sapphire/decorators": "^4.3.4",
-        "@sapphire/discord.js-utilities": "^4.11.0",
-        "@sapphire/fetch": "^2.3.1",
+        "@sapphire/discord.js-utilities": "^4.11.1",
+        "@sapphire/fetch": "^2.4.0",
         "@sapphire/framework": "^2.5.0",
         "@sapphire/plugin-editable-commands": "^1.2.0",
         "@sapphire/plugin-hmr": "^1.2.0",
@@ -37,12 +37,12 @@
         "@twurple/auth": "^5.1.6",
         "@twurple/eventsub": "^5.1.6",
         "@twurple/eventsub-ngrok": "^5.1.6",
+        "any-date-parser": "^1.5.3",
         "bufferutil": "^4.0.6",
         "bull": "^4.8.3",
-        "dayjs": "^1.11.2",
-        "dayjs-parser": "^0.9.3",
-        "discord-api-types": "^0.33.2",
-        "discord.js": "^13.7.0",
+        "dayjs": "^1.11.3",
+        "discord-api-types": "^0.33.5",
+        "discord.js": "^13.8.0",
         "dotenv": "^16.0.1",
         "erlpack": "github:discord/erlpack",
         "firebase-admin": "^10.2.0",
@@ -57,12 +57,12 @@
         "@sapphire/ts-config": "^3.3.4",
         "@types/bull": "^3.15.8",
         "@types/ms": "^0.7.31",
-        "@types/node": "^17.0.38",
-        "@typescript-eslint/eslint-plugin": "^5.27.0",
-        "@typescript-eslint/parser": "^5.27.0",
+        "@types/node": "^17.0.40",
+        "@typescript-eslint/eslint-plugin": "^5.27.1",
+        "@typescript-eslint/parser": "^5.27.1",
         "commitizen": "^4.2.4",
         "cz-conventional-changelog": "^3.3.0",
-        "eslint": "^8.16.0",
+        "eslint": "^8.17.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-import-resolver-node": "^0.3.6",
@@ -75,12 +75,17 @@
         "prettier": "^2.6.2",
         "resolve.exports": "^1.1.0",
         "standard-version": "^9.5.0",
-        "typescript": "^4.7.2"
+        "typescript": "^4.7.3"
     },
     "engines": {
         "node": "16.x"
     },
     "imports": {
         "#src/*": "./build/src/*.js"
+    },
+    "overrides": {
+        "ansi-regex": "^3.0.1",
+        "minimist": "^1.2.6",
+        "protobufjs": "^6.11.3"
     }
 }
