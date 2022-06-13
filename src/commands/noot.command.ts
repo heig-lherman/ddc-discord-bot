@@ -6,10 +6,10 @@ const sentences = [
     'ⁿᵒᵒᵗ ⁿᵒᵒᵗ',
     'ɴᴏᴏᴛ ɴᴏᴏᴛ',
     'noot noot',
-    "NOOT NOOT",
-    "ₙₒₒₜ ₙₒₒₜ",
+    'NOOT NOOT',
+    'ₙₒₒₜ ₙₒₒₜ',
     'ᴺᴼᴼᵀ ᴺᴼᴼᵀ',
-    'NOOT NOOT'
+    'NOOT NOOT',
 ];
 
 @ApplyOptions<Command.Options>({
