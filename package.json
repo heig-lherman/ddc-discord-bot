@@ -1,6 +1,6 @@
 {
     "name": "heig-ddc-discord-bot",
-    "version": "1.3.3",
+    "version": "1.4.0",
     "private": true,
     "main": "build/src/bot.js",
     "scripts": {

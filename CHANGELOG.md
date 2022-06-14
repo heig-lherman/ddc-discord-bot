@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.3.3...v1.4.0) (2022-06-14)
+
+
+### Features
+
+* **noot:** 60% chance for pingu gif ([572d360](https://github.com/Lutonite/heig-ddc-discord-bot/commit/572d3606eff15f05013a3ae56b4f0d2c4b662731))
+* **noot:** add new noot command ([10ac438](https://github.com/Lutonite/heig-ddc-discord-bot/commit/10ac438b209ba0f8213fde30e627abf57cf9b814))
+* **uwu:** uwuifier command ([6341072](https://github.com/Lutonite/heig-ddc-discord-bot/commit/63410727780bdc0a66b6b7539c68415e5c47e0c2))
+
+
+### Bug Fixes
+
+* **noot:** noot noot ([0aa9913](https://github.com/Lutonite/heig-ddc-discord-bot/commit/0aa9913bfe070bc1b20d585c59fbe7bb45e772dc))
+
+
+### Others
+
+* **console:** remove console logs or use logger ([e3dfd7f](https://github.com/Lutonite/heig-ddc-discord-bot/commit/e3dfd7f0eb5314cfc2c2d4c464b50f8ac95a99e8))
+
 ### [1.3.3](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.3.2...v1.3.3) (2022-06-07)
 
 
