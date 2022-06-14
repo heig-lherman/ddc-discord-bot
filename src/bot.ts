@@ -95,7 +95,7 @@ client
             'tasks',
         );
 
-        return subscribeTwitchEvents(client).catch(console.error);
+        return subscribeTwitchEvents(client).catch(client.logger.error);
     })
     // eslint-disable-next-line no-console
     .catch(console.error);

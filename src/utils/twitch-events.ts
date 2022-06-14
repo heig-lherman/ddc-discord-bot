@@ -33,7 +33,7 @@ export const twitchEventSubListener = new EventSubListener({
 
 export const subscribeTwitchEvents = async (client: SapphireClient) => {
     await twitchEventSubListener.listen().catch(console.error);
-    const subscriptions = await Promise.all(
+    await Promise.all(
         TWITCH_USER_IDS.map(async (userId) =>
             twitchEventSubListener.subscribeToStreamOnlineEvents(
                 userId,
@@ -41,12 +41,6 @@ export const subscribeTwitchEvents = async (client: SapphireClient) => {
                     client.emit('streamOnline', e);
                 },
             ),
-        ),
-    );
-
-    await Promise.all(
-        subscriptions.map(async (sub, i) =>
-            client.logger.info(`[${i}] => ${await sub.getCliTestCommand()}`),
         ),
     );
 };
