@@ -12,7 +12,8 @@ ENV HUSKY=0 \
     FIREBASE_PRIVATE_KEY="" \
     TWITCH_CLIENT_ID="" \
     TWITCH_CLIENT_SECRET="" \
-    TWITCH_SUBSCRIPTION_SECRET=""
+    TWITCH_SUBSCRIPTION_SECRET="" \
+    GIPHY_API_KEY=""
 
 COPY --chown=node:node package-lock.json .
 COPY --chown=node:node package.json .
