@@ -34,7 +34,7 @@ export default class NootCommand extends Command {
         }
 
         const res = await gf.random({
-            tag: 'noot noot',
+            tag: 'pingu noot noot',
             limit: 1,
             rating: 'pg-13',
         });
