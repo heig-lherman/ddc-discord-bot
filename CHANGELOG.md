@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.4.0...v1.4.1) (2022-09-28)
+
+
+### Bug Fixes
+
+* **firebase:** use local file for firebase configuration ([bb74212](https://github.com/Lutonite/heig-ddc-discord-bot/commit/bb74212082057a04552f52c1472747397dc771cd)), closes [#17](https://github.com/Lutonite/heig-ddc-discord-bot/issues/17)
+* **noot:** add pingu to tag and lower age rating ([ff8197c](https://github.com/Lutonite/heig-ddc-discord-bot/commit/ff8197c7a5652022324ab54e0d97f3258781a7db))
+
 ## [1.4.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.3.3...v1.4.0) (2022-06-14)
 
 
