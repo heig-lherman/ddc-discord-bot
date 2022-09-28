@@ -46,7 +46,7 @@
         "dayjs": "^1.11.3",
         "discord-api-types": "^0.33.5",
         "discord.js": "^13.8.0",
-        "dotenv": "^16.0.1",
+        "dotenv": "^16.0.2",
         "erlpack": "github:discord/erlpack",
         "firebase-admin": "^11.0.1",
         "ioredis": "^5.2.3",
