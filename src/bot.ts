@@ -58,7 +58,7 @@ const client = new SapphireClient({
     tasks: {
         strategy: new ScheduledTaskRedisStrategy({
             bull: {
-                redis: {
+                connection: {
                     host,
                     port,
                     password,
