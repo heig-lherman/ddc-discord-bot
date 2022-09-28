@@ -13,3 +13,11 @@ export function successEmbed(message: string): MessageEmbed {
         value: message,
     });
 }
+
+export function fieldValueOrEmpty(value: string): string {
+    if (!/\S/.test(value)) {
+        return '\u200B';
+    }
+
+    return value;
+}

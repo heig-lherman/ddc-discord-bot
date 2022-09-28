@@ -1,5 +1,5 @@
 import { queryCanteenMenu, RawMenu } from '#src/utils/canteen-menu-utils';
-import { errorEmbed } from '#src/utils/embed-utils';
+import { errorEmbed, fieldValueOrEmpty } from '#src/utils/embed-utils';
 import { capitalize } from '#src/utils/string-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
@@ -40,14 +40,18 @@ export default class MenusCommand extends Command {
             });
 
         Object.values(menus).forEach((menu: RawMenu, i) => {
-            embed.addField(
-                '-'.repeat(71),
-                `**${capitalize(today.weekday(i).format('dddd'))}**`,
-                false,
-            );
+            embed.addFields({
+                name: '-'.repeat(71),
+                value: `**${capitalize(today.weekday(i).format('dddd'))}**`,
+                inline: false,
+            });
             Object.entries(menu).forEach(([menuName, content]) => {
                 const title = `\`\`\`Menu ${capitalize(menuName)}\`\`\``;
-                embed.addField(title, content.join('\n'), true);
+                embed.addFields({
+                    name: title,
+                    value: fieldValueOrEmpty(content.join('\n')),
+                    inline: true,
+                });
             });
         });
 
