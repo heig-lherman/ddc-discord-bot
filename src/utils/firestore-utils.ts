@@ -10,7 +10,9 @@ import type {
     QueryDocumentSnapshot,
 } from 'firebase-admin/firestore';
 
-export const converter = <T>(): FirestoreDataConverter<T> => ({
+export const converter = <
+    T extends DocumentData,
+>(): FirestoreDataConverter<T> => ({
     fromFirestore(snapshot: QueryDocumentSnapshot): T {
         return snapshot.data() as T;
     },
