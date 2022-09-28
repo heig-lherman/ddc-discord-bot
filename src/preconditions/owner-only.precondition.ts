@@ -1,18 +1,41 @@
+import { Config } from '#src/Config';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Precondition } from '@sapphire/framework';
-import type { Snowflake } from 'discord-api-types/globals';
-import type { Message } from 'discord.js';
+import { AllFlowsPrecondition, Precondition } from '@sapphire/framework';
+import type {
+    CommandInteraction,
+    ContextMenuInteraction,
+    Message,
+} from 'discord.js';
 
-const AUTHOR_ID: Snowflake = '151729036987465728';
+export enum OwnerOnlyIdentifiers {
+    PreconditionOwnerOnly = 'preconditionOwnerOnly',
+}
 
 @ApplyOptions<Precondition.Options>({
     name: 'OwnerOnly',
 })
-export default class OwnerOnlyPrecondition extends Precondition {
-    public run(message: Message) {
-        return message.author.id === AUTHOR_ID
+export default class OwnerOnlyPrecondition extends AllFlowsPrecondition {
+    public override messageRun(message: Message): AllFlowsPrecondition.Result {
+        return this.checkOwner(message.author.id);
+    }
+
+    public override chatInputRun(
+        interaction: CommandInteraction,
+    ): AllFlowsPrecondition.Result {
+        return this.checkOwner(interaction.user.id);
+    }
+
+    public override contextMenuRun(
+        interaction: ContextMenuInteraction,
+    ): AllFlowsPrecondition.Result {
+        return this.checkOwner(interaction.user.id);
+    }
+
+    private checkOwner(userId: string) {
+        return Config.bot.owners.includes(userId)
             ? this.ok()
             : this.error({
+                  identifier: OwnerOnlyIdentifiers.PreconditionOwnerOnly,
                   message: 'Only the bot owner can use this command!',
               });
     }
