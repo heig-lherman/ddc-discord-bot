@@ -1,6 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Argument, Identifiers } from '@sapphire/framework';
-import { err, ok, type Result } from '@sapphire/result';
+import { Result } from '@sapphire/result';
 import dayjs, { type Dayjs } from 'dayjs';
 
 const MESSAGES: Record<string, (args: Argument.Context) => string> = {
@@ -27,17 +27,14 @@ export class DayjsArgument extends Argument<Dayjs> {
             minimum: context.minimum,
             maximum: context.maximum,
         });
-
-        if (resolved.success) {
-            return this.ok(resolved.value);
-        }
-
-        return this.error({
-            parameter,
-            identifier: resolved.error,
-            message: MESSAGES[resolved.error](context),
-            context,
-        });
+        return resolved.mapErrInto((identifier) =>
+            this.error({
+                parameter,
+                identifier,
+                message: MESSAGES[identifier](context),
+                context,
+            }),
+        );
     }
 
     private static resolveDate(
@@ -53,26 +50,26 @@ export class DayjsArgument extends Argument<Dayjs> {
             const parsed = dayjs(parameter, { locale: 'fr-ch' });
 
             if (!parsed.isValid()) {
-                return err(Identifiers.ArgumentDateError);
+                return Result.err(Identifiers.ArgumentDateError);
             }
 
             if (
                 typeof options?.minimum === 'number' &&
                 parsed.valueOf() < options.minimum
             ) {
-                return err(Identifiers.ArgumentDateTooEarly);
+                return Result.err(Identifiers.ArgumentDateTooEarly);
             }
 
             if (
                 typeof options?.maximum === 'number' &&
                 parsed.valueOf() > options.maximum
             ) {
-                return err(Identifiers.ArgumentDateTooFar);
+                return Result.err(Identifiers.ArgumentDateTooFar);
             }
 
-            return ok(parsed);
+            return Result.ok(parsed);
         } catch (e: unknown) {
-            return err(Identifiers.ArgumentDateError);
+            return Result.err(Identifiers.ArgumentDateError);
         }
     }
 }
