@@ -3,7 +3,7 @@ import { getGuildCollection, getGuildData } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
-import { SubCommandPluginCommand } from '@sapphire/plugin-subcommands';
+import { Subcommand } from '@sapphire/plugin-subcommands';
 import { Guild, Message, MessageEmbed } from 'discord.js';
 import { FieldValue } from 'firebase-admin/firestore';
 
@@ -12,22 +12,22 @@ const getCounterValue = async (guild: Guild): Promise<number> => {
     return guildData.data()?.counters?.beers ?? 0;
 };
 
-@ApplyOptions<SubCommandPluginCommand.Options>({
+@ApplyOptions<Subcommand.Options>({
     name: 'beers',
     description: 'Beer counter (!beers help for all commands)',
-    subCommands: [
-        { input: 'get', default: true },
-        { input: '+', output: 'plus' },
-        { input: '++', output: 'plus' },
-        { input: '-', output: 'minus' },
-        { input: '--', output: 'minus' },
-        { input: '=', output: 'set' },
-        'help',
+    subcommands: [
+        { name: 'get', messageRun: 'get', default: true },
+        { name: '+', messageRun: 'plus' },
+        { name: '++', messageRun: 'plus' },
+        { name: '-', messageRun: 'minus' },
+        { name: '--', messageRun: 'minus' },
+        { name: '=', messageRun: 'set' },
+        { name: 'help', messageRun: 'help' },
     ],
     enabled: true,
     runIn: 'GUILD_TEXT',
 })
-export default class BeersCommand extends SubCommandPluginCommand {
+export default class BeersCommand extends Subcommand {
     public async get(message: Message) {
         const { logger } = this.container;
         if (!message.guild) {
