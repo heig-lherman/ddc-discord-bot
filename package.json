@@ -88,8 +88,6 @@
         "#src/*": "./build/src/*.js"
     },
     "overrides": {
-        "ansi-regex": "^3.0.1",
-        "minimist": "^1.2.6",
-        "protobufjs": "^6.11.3"
+        "jose": "^2.0.6"
     }
 }
