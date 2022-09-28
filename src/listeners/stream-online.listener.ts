@@ -30,10 +30,13 @@ export default class StreamOnlineListener extends Listener {
                 `:tv: ${event.broadcasterDisplayName} - Stream en ligne !`,
             )
             .setURL(streamUrl)
-            .addField('Titre', stream?.title || 'Aucun titre');
+            .addFields({
+                name: 'Titre',
+                value: stream?.title || 'Aucun titre',
+            });
 
         if (game) {
-            embed.addField('Jeu', game.name || 'Aucun jeu');
+            embed.addFields({ name: 'Jeu', value: game.name || 'Aucun jeu' });
             embed.setThumbnail(game.boxArtUrl);
         }
 
