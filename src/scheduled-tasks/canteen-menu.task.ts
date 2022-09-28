@@ -3,6 +3,7 @@ import {
     type RawMenu,
 } from '#src/utils/canteen-menu-utils';
 import { findChannelByName } from '#src/utils/discord-collection-utils';
+import { fieldValueOrEmpty } from '#src/utils/embed-utils';
 import { capitalize } from '#src/utils/string-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks';
@@ -59,7 +60,11 @@ export default class CanteenMenuTask extends ScheduledTask {
 
         Object.entries(menu).forEach(([name, content]) => {
             const title = `\`\`\`Menu ${capitalize(name)}\`\`\``;
-            embed.addField(title, content.join('\n'), true);
+            embed.addFields({
+                name: title,
+                value: fieldValueOrEmpty(content.join('\n')),
+                inline: true,
+            });
         });
 
         await channel.send({
