@@ -3,7 +3,7 @@ import { errorEmbed, successEmbed } from '#src/utils/embed-utils';
 import { converter, getGuildCollection } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
-import { SubCommandPluginCommand } from '@sapphire/plugin-subcommands';
+import { Subcommand } from '@sapphire/plugin-subcommands';
 import dayjs from 'dayjs';
 import {
     type EmbedFieldData,
@@ -17,22 +17,22 @@ import type {
     DocumentSnapshot,
 } from 'firebase-admin/firestore';
 
-@ApplyOptions<SubCommandPluginCommand.Options>({
+@ApplyOptions<Subcommand.Options>({
     name: 'homework',
     enabled: true,
-    subCommands: [
-        { input: 'show', default: true },
-        { input: 'show-all', output: 'showAll' },
-        'help',
-        'add',
-        'update',
-        'delete',
+    subcommands: [
+        { name: 'show', messageRun: 'show', default: true },
+        { name: 'show-all', messageRun: 'showAll' },
+        { name: 'help', messageRun: 'help' },
+        { name: 'add', messageRun: 'add' },
+        { name: 'update', messageRun: 'update' },
+        { name: 'delete', messageRun: 'delete' },
     ],
     aliases: ['hw'],
     description: 'Manage homeworks. !hw help to show all commands',
     runIn: 'GUILD_TEXT',
 })
-export default class HomeworkCommand extends SubCommandPluginCommand {
+export default class HomeworkCommand extends Subcommand {
     public async help(message: Message) {
         message.channel.send({
             embeds: [
