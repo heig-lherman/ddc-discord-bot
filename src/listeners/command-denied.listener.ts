@@ -1,12 +1,15 @@
 import { errorEmbed } from '#src/utils/embed-utils';
 import { ApplyOptions } from '@sapphire/decorators';
-import { CommandDeniedPayload, Listener } from '@sapphire/framework';
+import {
+    Listener,
+    type MessageCommandDeniedPayload,
+} from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({
-    event: 'commandDenied',
+    event: 'messageCommandDenied',
 })
 export default class CommandDeniedListener extends Listener {
-    run(error: Error, { message }: CommandDeniedPayload): unknown {
+    run(error: Error, { message }: MessageCommandDeniedPayload): unknown {
         return message.reply({
             embeds: [
                 errorEmbed(

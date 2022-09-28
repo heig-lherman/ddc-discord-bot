@@ -1,12 +1,12 @@
 import { errorEmbed } from '#src/utils/embed-utils';
 import { ApplyOptions } from '@sapphire/decorators';
-import { CommandErrorPayload, Listener } from '@sapphire/framework';
+import { Listener, type MessageCommandErrorPayload } from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({
-    event: 'commandError',
+    event: 'messageCommandError',
 })
 export default class CommandErrorListener extends Listener {
-    run(error: Error, { message }: CommandErrorPayload): unknown {
+    run(error: Error, { message }: MessageCommandErrorPayload): unknown {
         return message.reply({
             embeds: [
                 errorEmbed(
