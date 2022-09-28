@@ -10,7 +10,9 @@
         "lint:fix": "npm run lint -- --fix",
         "tsc:check": "tsc --noEmit",
         "dev": "npm run build && NODE_ENV=development run-p build:watch start",
+        "dev:inspect": "npm run build && NODE_ENV=development run-p build:watch start:inspect",
         "start": "node build/src/bot.js",
+        "start:inspect": "node --inspect build/src/bot.js",
         "test": "run-p lint tsc:check",
         "release": "HUSKY=0 standard-version",
         "prepare": "husky install"
