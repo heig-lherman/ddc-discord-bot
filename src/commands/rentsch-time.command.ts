@@ -3,7 +3,7 @@ import { getGuildCollection, getGuildData } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
-import { SubCommandPluginCommand } from '@sapphire/plugin-subcommands';
+import { Subcommand } from '@sapphire/plugin-subcommands';
 import dayjs from 'dayjs';
 import { Guild, Message, MessageEmbed } from 'discord.js';
 import { FieldValue } from 'firebase-admin/firestore';
@@ -16,22 +16,22 @@ const getCounterValue = async (guild: Guild): Promise<string> => {
         .format('H[h] m[m]');
 };
 
-@ApplyOptions<SubCommandPluginCommand.Options>({
+@ApplyOptions<Subcommand.Options>({
     name: 'rentsch-time',
     aliases: ['rrht', 'rentschtime'],
     description:
         'The break time RRH stole from us. (!rrht help for all commands)',
-    subCommands: [
-        { input: 'get', default: true },
-        { input: '+=', output: 'add' },
-        { input: '-=', output: 'subtract' },
-        { input: '=', output: 'set' },
-        'help',
+    subcommands: [
+        { name: 'get', messageRun: 'get', default: true },
+        { name: '+=', messageRun: 'add' },
+        { name: '-=', messageRun: 'subtract' },
+        { name: '=', messageRun: 'set' },
+        { name: 'help', messageRun: 'help' },
     ],
     enabled: true,
     runIn: 'GUILD_TEXT',
 })
-export default class RentschTimeCommand extends SubCommandPluginCommand {
+export default class RentschTimeCommand extends Subcommand {
     public async get(message: Message) {
         const { logger } = this.container;
         if (!message.guild) {
