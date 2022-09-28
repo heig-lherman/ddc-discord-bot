@@ -9,7 +9,7 @@ import {
 } from '@sapphire/fetch';
 import type { Args } from '@sapphire/framework';
 import { reply, send } from '@sapphire/plugin-editable-commands';
-import { SubCommandPluginCommand } from '@sapphire/plugin-subcommands';
+import { Subcommand } from '@sapphire/plugin-subcommands';
 import { Guild, type Message, MessageEmbed } from 'discord.js';
 import {
     type CollectionReference,
@@ -17,23 +17,23 @@ import {
     type Query,
 } from 'firebase-admin/firestore';
 
-@ApplyOptions<SubCommandPluginCommand.Options>({
+@ApplyOptions<Subcommand.Options>({
     name: 'rentsch',
     description: 'Tell a truth about life. (!rrh help for all commands)',
     aliases: ['rrh'],
-    subCommands: [
-        { input: 'get', default: true },
-        'add',
-        'edit',
-        'delete',
-        'help',
-        'import',
-        'export',
+    subcommands: [
+        { name: 'get', messageRun: 'get', default: true },
+        { name: 'add', messageRun: 'add' },
+        { name: 'edit', messageRun: 'edit' },
+        { name: 'delete', messageRun: 'delete' },
+        { name: 'help', messageRun: 'help' },
+        { name: 'import', messageRun: 'import' },
+        { name: 'export', messageRun: 'export' },
     ],
     enabled: true,
     runIn: 'GUILD_TEXT',
 })
-export default class RentschCommand extends SubCommandPluginCommand {
+export default class RentschCommand extends Subcommand {
     public async get(message: Message) {
         const { logger } = this.container;
         if (!message.guild) {
