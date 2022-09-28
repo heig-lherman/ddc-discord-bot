@@ -71,6 +71,9 @@ const client = new SapphireClient({
     hmr: {
         enabled: process.env.NODE_ENV === 'development',
     },
+    loadMessageCommandListeners: true,
+    loadDefaultErrorListeners: true,
+    loadSubcommandErrorListeners: true,
 });
 
 client
