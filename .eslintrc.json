@@ -73,7 +73,6 @@
             },
             "typescript": {},
             "./scripts/eslint-plugin-import-resolver.js": {}
-
         },
         "import/extensions": [
             ".js",

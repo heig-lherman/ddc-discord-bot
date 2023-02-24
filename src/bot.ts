@@ -29,6 +29,8 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 dayjs.extend(dayjsParser);
 
+dayjs.locale('fr-ch');
+
 initializeApp({
     credential: cert(process.env.FIREBASE_CREDENTIALS_PATH ?? ''),
 });

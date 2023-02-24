@@ -1,15 +1,12 @@
 import {
-    queryCanteenMenuOfTheDay,
-    type RawMenu,
-} from '#src/utils/canteen-menu-utils';
+    APIDayMenuModel,
+    buildDayMenuEmbed,
+    queryDayMenu,
+} from '#src/services/heig-canteen-menu.service';
 import { findChannelByName } from '#src/utils/discord-collection-utils';
-import { fieldValueOrEmpty } from '#src/utils/embed-utils';
-import { capitalize } from '#src/utils/string-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks';
-import dayjs from 'dayjs';
-import type { Snowflake, Guild } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
+import type { Guild, Snowflake } from 'discord.js';
 
 const GUILDS: Snowflake[] = ['887670429760749569'];
 
@@ -21,7 +18,7 @@ export default class CanteenMenuTask extends ScheduledTask {
     public override async run() {
         const { client, logger } = this.container;
 
-        const menu = await queryCanteenMenuOfTheDay();
+        const menu = await queryDayMenu();
         if (!menu) {
             logger.error('Could not find menu of the day');
             return;
@@ -37,7 +34,10 @@ export default class CanteenMenuTask extends ScheduledTask {
         });
     }
 
-    private async handleGuildMenu(guild: Guild, menu: RawMenu): Promise<void> {
+    private async handleGuildMenu(
+        guild: Guild,
+        menu: APIDayMenuModel,
+    ): Promise<void> {
         const { logger } = this.container;
 
         const channel = findChannelByName(guild, 'menus');
@@ -48,23 +48,8 @@ export default class CanteenMenuTask extends ScheduledTask {
             return;
         }
 
-        const today = dayjs().locale('fr-ch');
-
-        const embed = new EmbedBuilder()
-            .setColor('#EA580C')
-            .setTitle(`:fork_and_knife: Menus du ${today.format('dddd LL')}`);
-
-        Object.entries(menu).forEach(([name, content]) => {
-            const title = `\`\`\`Menu ${capitalize(name)}\`\`\``;
-            embed.addFields({
-                name: title,
-                value: fieldValueOrEmpty(content.join('\n')),
-                inline: true,
-            });
-        });
-
         await channel.send({
-            embeds: [embed],
+            embeds: [buildDayMenuEmbed(menu)],
         });
     }
 }

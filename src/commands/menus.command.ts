@@ -1,57 +1,76 @@
-import { queryCanteenMenu, RawMenu } from '#src/utils/canteen-menu-utils';
-import { errorEmbed, fieldValueOrEmpty } from '#src/utils/embed-utils';
-import { capitalize } from '#src/utils/string-utils';
+import {
+    buildDayMenuEmbed,
+    buildWeekMenuEmbed,
+    queryDayMenu,
+    queryWeekMenu,
+} from '#src/services/heig-canteen-menu.service';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { ApplicationCommandRegistry, Args, Command } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
-import dayjs from 'dayjs';
-import type { Message } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
-
-const DAY_FORMAT = 'DD MMMM YYYY';
+import type {
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+    Message,
+} from 'discord.js';
 
 @ApplyOptions<Command.Options>({
     name: 'menus',
     description: 'Display the menus of the week at the HEIG-VD',
     enabled: true,
+    flags: ['today'],
 })
 export default class MenusCommand extends Command {
-    public override async messageRun(message: Message) {
-        const menus = await queryCanteenMenu();
+    override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+        registry.registerChatInputCommand(
+            (builder) =>
+                builder
+                    .setName(this.name)
+                    .setDescription(this.description)
+                    .addBooleanOption((option) =>
+                        option
+                            .setName('today')
+                            .setDescription("Only display today's menu")
+                            .setRequired(false),
+                    ),
+            { idHints: ['1078650858973175838'] },
+        );
+    }
 
-        if (!Object.keys(menus).length) {
-            return send(message, {
-                embeds: [errorEmbed('The menus are not available')],
+    public override async chatInputRun(
+        interaction: ChatInputCommandInteraction,
+    ) {
+        if (interaction.options.getBoolean('today', false) ?? false) {
+            return interaction.reply({
+                embeds: [await this.getDayEmbed()],
             });
         }
 
-        const today = dayjs().locale('fr-ch');
-        const startWeek = today.startOf('week').format(DAY_FORMAT);
-        const endWeek = today.endOf('week').format(DAY_FORMAT);
-
-        const embed = new EmbedBuilder()
-            .setColor('#EA580C')
-            .setTitle(`:fork_and_knife: Menus de la semaine ${today.week()}`)
-            .setFooter({
-                text: `Semaine du ${startWeek} au ${endWeek}`,
-            });
-
-        Object.values(menus).forEach((menu: RawMenu, i) => {
-            embed.addFields({
-                name: '-'.repeat(71),
-                value: `**${capitalize(today.weekday(i).format('dddd'))}**`,
-                inline: false,
-            });
-            Object.entries(menu).forEach(([menuName, content]) => {
-                const title = `\`\`\`Menu ${capitalize(menuName)}\`\`\``;
-                embed.addFields({
-                    name: title,
-                    value: fieldValueOrEmpty(content.join('\n')),
-                    inline: true,
-                });
-            });
+        return interaction.reply({
+            embeds: [await this.getWeekEmbed()],
         });
+    }
 
-        return send(message, { embeds: [embed] });
+    public override async messageRun(message: Message, args: Args) {
+        const showToday = args.getFlags('today');
+
+        if (showToday) {
+            return send(message, {
+                embeds: [await this.getDayEmbed()],
+            });
+        }
+
+        return send(message, {
+            embeds: [await this.getWeekEmbed()],
+        });
+    }
+
+    private async getWeekEmbed(): Promise<EmbedBuilder> {
+        const menu = await queryWeekMenu();
+        return buildWeekMenuEmbed(menu);
+    }
+
+    private async getDayEmbed(): Promise<EmbedBuilder> {
+        const menu = await queryDayMenu();
+        return buildDayMenuEmbed(menu);
     }
 }
