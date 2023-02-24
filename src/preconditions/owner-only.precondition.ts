@@ -2,8 +2,8 @@ import { Config } from '#src/Config';
 import { ApplyOptions } from '@sapphire/decorators';
 import { AllFlowsPrecondition, Precondition } from '@sapphire/framework';
 import type {
-    CommandInteraction,
-    ContextMenuInteraction,
+    ChatInputCommandInteraction,
+    ContextMenuCommandInteraction,
     Message,
 } from 'discord.js';
 
@@ -20,18 +20,18 @@ export default class OwnerOnlyPrecondition extends AllFlowsPrecondition {
     }
 
     public override chatInputRun(
-        interaction: CommandInteraction,
+        interaction: ChatInputCommandInteraction,
     ): AllFlowsPrecondition.Result {
         return this.checkOwner(interaction.user.id);
     }
 
     public override contextMenuRun(
-        interaction: ContextMenuInteraction,
+        interaction: ContextMenuCommandInteraction,
     ): AllFlowsPrecondition.Result {
         return this.checkOwner(interaction.user.id);
     }
 
-    private checkOwner(userId: string) {
+    private checkOwner(userId: string): Precondition.Result {
         return Config.bot.owners.includes(userId)
             ? this.ok()
             : this.error({

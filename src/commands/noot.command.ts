@@ -1,46 +1,51 @@
-import { GiphyFetch } from '@giphy/js-fetch-api';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
-import type { Message } from 'discord.js';
+import { oneLineTrim } from 'common-tags';
+import type {
+    BaseMessageOptions,
+    ChatInputCommandInteraction,
+    Message,
+} from 'discord.js';
 
-const sentences = [
-    'ⁿᵒᵒᵗ ⁿᵒᵒᵗ',
-    'ɴᴏᴏᴛ ɴᴏᴏᴛ',
-    'noot noot',
-    'NOOT NOOT',
-    'ₙₒₒₜ ₙₒₒₜ',
-    'ᴺᴼᴼᵀ ᴺᴼᴼᵀ',
-    'NOOT NOOT',
+const baseUrl = 'https://giphy.com/embed/';
+const images = [
+    'iDPv54rvXkkA8',
+    'XHQw4TNhd8RRC',
+    'sy23M3VeBGkvK',
+    'psv1zrhPZM6WI',
+    'gfJtgKZrBfXP2',
+    'pKZvvnJoFUh8Y',
+    '81cBoGwKePvck',
+    'eNq8xHnkD6mnLTqTws',
+    'QBC5foQmcOkdq',
 ];
 
-const gf = new GiphyFetch(process.env.GIPHY_API_KEY ?? 'unknown');
-
-const sendRandom = async (message: Message) => {
-    return send(message, {
-        content: sentences[Math.floor(Math.random() * sentences.length)],
-    });
-};
-
+const buildRandomMessage = (): BaseMessageOptions => ({
+    content: oneLineTrim`
+        ${baseUrl}
+        ${images[Math.floor(Math.random() * images.length)]}
+    `,
+});
 @ApplyOptions<Command.Options>({
     name: 'noot',
     description: 'noot noot',
     enabled: true,
 })
 export default class NootCommand extends Command {
-    public override async messageRun(message: Message) {
-        if (Math.random() > 0.6) {
-            return sendRandom(message);
-        }
+    override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+        registry.registerChatInputCommand(
+            (builder) =>
+                builder.setName(this.name).setDescription(this.description),
+            { idHints: ['1078596618091245578'] },
+        );
+    }
 
-        const res = await gf.random({
-            tag: 'pingu noot noot',
-            limit: 1,
-            rating: 'pg-13',
-        });
+    public override chatInputRun(interaction: ChatInputCommandInteraction) {
+        return interaction.reply(buildRandomMessage());
+    }
 
-        return send(message, {
-            content: res.data.embed_url,
-        });
+    public override messageRun(message: Message) {
+        return send(message, buildRandomMessage());
     }
 }

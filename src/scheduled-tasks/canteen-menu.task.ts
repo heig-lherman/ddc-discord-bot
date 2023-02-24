@@ -8,14 +8,13 @@ import { capitalize } from '#src/utils/string-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks';
 import dayjs from 'dayjs';
-import type { Snowflake } from 'discord-api-types/globals';
-import type { Guild } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import type { Snowflake, Guild } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 const GUILDS: Snowflake[] = ['887670429760749569'];
 
 @ApplyOptions<ScheduledTask.Options>({
-    cron: '0 10 * * 1-5',
+    pattern: '0 10 * * 1-5',
     enabled: true,
 })
 export default class CanteenMenuTask extends ScheduledTask {
@@ -51,12 +50,9 @@ export default class CanteenMenuTask extends ScheduledTask {
 
         const today = dayjs().locale('fr-ch');
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#EA580C')
-            .setTitle(`:fork_and_knife: Menus du ${today.format('dddd LL')}`)
-            .setThumbnail(
-                'https://pbs.twimg.com/profile_images/1339474601097748480/PVp2lBhv_400x400.jpg',
-            );
+            .setTitle(`:fork_and_knife: Menus du ${today.format('dddd LL')}`);
 
         Object.entries(menu).forEach(([name, content]) => {
             const title = `\`\`\`Menu ${capitalize(name)}\`\`\``;

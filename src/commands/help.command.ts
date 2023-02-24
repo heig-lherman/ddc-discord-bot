@@ -1,7 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
-import type { EmbedFieldData, Message } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { send } from '@sapphire/plugin-editable-commands';
+import type { APIEmbedField, Message } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
     name: 'help',
@@ -10,7 +11,7 @@ import { MessageEmbed } from 'discord.js';
 })
 export default class HelpCommand extends Command {
     public override async messageRun(message: Message) {
-        const commandFields: EmbedFieldData[] = [];
+        const commandFields: APIEmbedField[] = [];
         this.container.client.stores
             .get('commands')
             .filter((c) => c.name !== 'help')
@@ -26,12 +27,12 @@ export default class HelpCommand extends Command {
                 });
             });
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#2DD4BF')
             .setTitle('All available commands')
             .addFields(...commandFields);
 
-        message.channel.send({
+        return send(message, {
             embeds: [embed],
         });
     }

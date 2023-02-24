@@ -10,7 +10,7 @@ import {
 import type { Args } from '@sapphire/framework';
 import { reply, send } from '@sapphire/plugin-editable-commands';
 import { Subcommand } from '@sapphire/plugin-subcommands';
-import { Guild, type Message, MessageEmbed } from 'discord.js';
+import { EmbedBuilder, Guild, type Message } from 'discord.js';
 import {
     type CollectionReference,
     FieldPath,
@@ -57,7 +57,7 @@ export default class RentschCommand extends Subcommand {
             return;
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setDescription(quote.docs[0].data().content)
             .setFooter({ text: `© Rentsch - ID: ${quote.docs[0].id}` });
 
@@ -246,7 +246,7 @@ export default class RentschCommand extends Subcommand {
     public async help(message: Message) {
         await reply(message, {
             embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setColor('#725fde')
                     .setTitle('Quote commands')
                     .setDescription(

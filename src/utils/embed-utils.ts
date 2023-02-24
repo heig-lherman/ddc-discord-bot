@@ -1,14 +1,14 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
-export function errorEmbed(message: string): MessageEmbed {
-    return new MessageEmbed().setColor('#DC2626').addFields({
+export function errorEmbed(message: string): EmbedBuilder {
+    return new EmbedBuilder().setColor('#DC2626').addFields({
         name: '❌  Error',
         value: message,
     });
 }
 
-export function successEmbed(message: string): MessageEmbed {
-    return new MessageEmbed().setColor('#6CC070').addFields({
+export function successEmbed(message: string): EmbedBuilder {
+    return new EmbedBuilder().setColor('#6CC070').addFields({
         name: '✅  Success',
         value: message,
     });

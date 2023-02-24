@@ -1,4 +1,4 @@
-import { Guild, TextChannel } from 'discord.js';
+import { type Guild, TextChannel } from 'discord.js';
 
 export const findChannelByName = (
     guild: Guild,

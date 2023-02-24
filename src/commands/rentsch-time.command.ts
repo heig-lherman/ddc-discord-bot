@@ -5,7 +5,7 @@ import type { Args } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import dayjs from 'dayjs';
-import { Guild, Message, MessageEmbed } from 'discord.js';
+import { EmbedBuilder, Guild, Message } from 'discord.js';
 import { FieldValue } from 'firebase-admin/firestore';
 import ms from 'ms';
 
@@ -41,7 +41,7 @@ export default class RentschTimeCommand extends Subcommand {
 
         await send(message, {
             embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setColor('#71cfcf')
                     .setTitle('⏰ Lost time')
                     .setDescription(
@@ -137,7 +137,7 @@ export default class RentschTimeCommand extends Subcommand {
     public async help(message: Message) {
         await send(message, {
             embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setColor('#71cfcf')
                     .setTitle('Time counter commands')
                     .setDescription('Manage the RRH time counter.')

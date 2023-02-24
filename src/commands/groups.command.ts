@@ -2,9 +2,10 @@ import { shuffleArray } from '#src/utils/array-utils';
 import { errorEmbed } from '#src/utils/embed-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command } from '@sapphire/framework';
+import { reply, send } from '@sapphire/plugin-editable-commands';
 import dayjs from 'dayjs';
 import type { Message } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
     name: 'groups',
@@ -17,17 +18,16 @@ export default class GroupsCommand extends Command {
         const groupSize = parseInt(names.pop() ?? '0', 10);
 
         if (names.length < groupSize || groupSize <= 0) {
-            message.channel.send({
+            return reply(message, {
                 embeds: [
                     errorEmbed(
                         `Size is invalid you dumbo: [1, ${names.length}]`,
                     ),
                 ],
             });
-            return;
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#EA580C')
             .setTitle('🎡 **Random Groups** 🎡');
         shuffleArray(names);
@@ -48,7 +48,7 @@ export default class GroupsCommand extends Command {
             text: `Groups created randomly at ${timeNow}.`,
         });
 
-        message.channel.send({
+        return send(message, {
             embeds: [embed],
         });
     }

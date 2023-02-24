@@ -1,8 +1,11 @@
 import type { SapphireClient } from '@sapphire/framework';
 import { ApiClient } from '@twurple/api';
-import { ClientCredentialsAuthProvider } from '@twurple/auth';
-import { EventSubListener, ReverseProxyAdapter } from '@twurple/eventsub';
-import type { EventSubStreamOnlineEvent } from '@twurple/eventsub/lib/events/EventSubStreamOnlineEvent';
+import { AppTokenAuthProvider } from '@twurple/auth';
+import type { EventSubStreamOnlineEvent } from '@twurple/eventsub-base';
+import {
+    EventSubHttpListener,
+    ReverseProxyAdapter,
+} from '@twurple/eventsub-http';
 
 const TWITCH_USER_IDS = ['81936976', '756569499', '538667021'];
 const SUBSCRIPTION_SECRET: string | undefined =
@@ -12,7 +15,7 @@ if (!SUBSCRIPTION_SECRET) {
     throw new Error('Missing TWITCH_SUBSCRIPTION_SECRET');
 }
 
-export const twitchAuthProvider = new ClientCredentialsAuthProvider(
+export const twitchAuthProvider = new AppTokenAuthProvider(
     process.env.TWITCH_CLIENT_ID ?? '',
     process.env.TWITCH_CLIENT_SECRET ?? '',
 );
@@ -21,7 +24,7 @@ export const twitchApiClient = new ApiClient({
     authProvider: twitchAuthProvider,
 });
 
-export const twitchEventSubListener = new EventSubListener({
+export const twitchEventSubListener = new EventSubHttpListener({
     apiClient: twitchApiClient,
     adapter: new ReverseProxyAdapter({
         hostName: 'ddc.cc4.ch',
@@ -32,16 +35,11 @@ export const twitchEventSubListener = new EventSubListener({
 });
 
 export const subscribeTwitchEvents = async (client: SapphireClient) => {
-    await twitchEventSubListener.listen().catch(console.error);
-    await Promise.all(
-        TWITCH_USER_IDS.map(async (userId) =>
-            twitchEventSubListener.subscribeToStreamOnlineEvents(
-                userId,
-                (e) => {
-                    client.emit('streamOnline', e);
-                },
-            ),
-        ),
+    twitchEventSubListener.start();
+    TWITCH_USER_IDS.map(async (userId) =>
+        twitchEventSubListener.onStreamOnline(userId, (e) => {
+            client.emit('streamOnline', e);
+        }),
     );
 };
 

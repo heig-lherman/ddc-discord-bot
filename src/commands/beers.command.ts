@@ -4,7 +4,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
 import { Subcommand } from '@sapphire/plugin-subcommands';
-import { Guild, Message, MessageEmbed } from 'discord.js';
+import { Guild, Message, EmbedBuilder } from 'discord.js';
 import { FieldValue } from 'firebase-admin/firestore';
 
 const getCounterValue = async (guild: Guild): Promise<number> => {
@@ -37,7 +37,7 @@ export default class BeersCommand extends Subcommand {
 
         await send(message, {
             embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setColor('#f28e1c')
                     .setTitle('🍻 Beer counter')
                     .setDescription(
@@ -123,7 +123,7 @@ export default class BeersCommand extends Subcommand {
     public async help(message: Message) {
         await send(message, {
             embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setColor('#ffcb87')
                     .setTitle('Counter commands')
                     .setDescription('Manage the beer counter.')

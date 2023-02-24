@@ -1,8 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
+import { isTextChannel } from '@sapphire/discord.js-utilities';
 import { Listener } from '@sapphire/framework';
-import type { EventSubStreamOnlineEvent } from '@twurple/eventsub/lib/events/EventSubStreamOnlineEvent';
-import type { Snowflake } from 'discord-api-types/globals';
-import { MessageEmbed } from 'discord.js';
+import type { EventSubStreamOnlineEvent } from '@twurple/eventsub-base';
+import { type Snowflake, EmbedBuilder } from 'discord.js';
 
 const GUILDS: { id: Snowflake; channel: Snowflake }[] = [
     { id: '887670429760749569', channel: '981888025095196702' },
@@ -20,11 +20,11 @@ export default class StreamOnlineListener extends Listener {
 
         const streamUrl = `https://www.twitch.tv/${event.broadcasterName}`;
 
-        const channels = await Promise.all(
-            GUILDS.map((sfs) => client.channels.cache.get(sfs.channel)),
+        const channels = GUILDS.map((sfs) =>
+            client.channels.cache.get(sfs.channel),
         );
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#9146FF')
             .setTitle(
                 `:tv: ${event.broadcasterDisplayName} - Stream en ligne !`,
@@ -40,10 +40,10 @@ export default class StreamOnlineListener extends Listener {
             embed.setThumbnail(game.boxArtUrl);
         }
 
-        embed.setImage(stream?.thumbnailUrl);
+        embed.setImage(stream?.thumbnailUrl ?? null);
 
         return channels.map((channel) => {
-            if (channel && channel.isText()) {
+            if (channel && isTextChannel(channel)) {
                 return channel.send({
                     content: '<@&981902175850602566>',
                     embeds: [embed],

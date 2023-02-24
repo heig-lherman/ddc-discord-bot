@@ -16,7 +16,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import weekday from 'dayjs/plugin/weekday';
-import { GatewayIntentBits } from 'discord-api-types/v10';
+import { GatewayIntentBits } from 'discord.js';
 import { cert, initializeApp } from 'firebase-admin/app';
 import { type Firestore, getFirestore } from 'firebase-admin/firestore';
 import IORedis, { type Redis } from 'ioredis';

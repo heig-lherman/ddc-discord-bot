@@ -3,9 +3,10 @@ import { errorEmbed, fieldValueOrEmpty } from '#src/utils/embed-utils';
 import { capitalize } from '#src/utils/string-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
+import { send } from '@sapphire/plugin-editable-commands';
 import dayjs from 'dayjs';
 import type { Message } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 const DAY_FORMAT = 'DD MMMM YYYY';
 
@@ -19,22 +20,18 @@ export default class MenusCommand extends Command {
         const menus = await queryCanteenMenu();
 
         if (!Object.keys(menus).length) {
-            message.channel.send({
+            return send(message, {
                 embeds: [errorEmbed('The menus are not available')],
             });
-            return;
         }
 
         const today = dayjs().locale('fr-ch');
         const startWeek = today.startOf('week').format(DAY_FORMAT);
         const endWeek = today.endOf('week').format(DAY_FORMAT);
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#EA580C')
             .setTitle(`:fork_and_knife: Menus de la semaine ${today.week()}`)
-            .setThumbnail(
-                'https://pbs.twimg.com/profile_images/1339474601097748480/PVp2lBhv_400x400.jpg',
-            )
             .setFooter({
                 text: `Semaine du ${startWeek} au ${endWeek}`,
             });
@@ -55,8 +52,6 @@ export default class MenusCommand extends Command {
             });
         });
 
-        message.channel.send({
-            embeds: [embed],
-        });
+        return send(message, { embeds: [embed] });
     }
 }
