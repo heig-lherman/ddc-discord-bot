@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/order
 import 'dotenv/config';
 
+import { subscribeTwitchEvents } from '#src/services/twitch-events.service';
 import dayjsParser from '#src/utils/dayjs-parser';
-import { subscribeTwitchEvents } from '#src/utils/twitch-events';
 import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import '@sapphire/plugin-editable-commands/register';
 import '@sapphire/plugin-hmr/register';
@@ -93,7 +93,7 @@ client
             'tasks',
         );
 
-        return subscribeTwitchEvents(client).catch(client.logger.error);
+        subscribeTwitchEvents(client).catch(client.logger.error);
     })
     // eslint-disable-next-line no-console
     .catch(console.error);
