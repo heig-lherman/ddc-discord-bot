@@ -24,7 +24,8 @@ const sentences = [
 export default class MassimoCommand extends Command {
     public override async messageRun(message: Message) {
         return send(message, {
-            content: sentences[Math.floor(Math.random() * sentences.length)],
+            content:
+                sentences[Math.floor(Math.random() * sentences.length)] ?? '',
         });
     }
 }

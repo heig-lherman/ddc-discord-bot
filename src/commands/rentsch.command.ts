@@ -58,7 +58,11 @@ export default class RentschCommand extends Subcommand {
         }
 
         const embed = new EmbedBuilder()
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             .setDescription(quote.docs[0].data().content)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             .setFooter({ text: `© Rentsch - ID: ${quote.docs[0].id}` });
 
         await send(message, {
@@ -100,6 +104,8 @@ export default class RentschCommand extends Subcommand {
 
         try {
             const quoteQuery = await quoteQueryRef.get();
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             if (quoteQuery.empty || !quoteQuery.docs[0].exists) {
                 await send(message, {
                     embeds: [errorEmbed(`No quote found with ID ${id}`)],
@@ -108,12 +114,16 @@ export default class RentschCommand extends Subcommand {
             }
 
             const quote = quoteQuery.docs[0];
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             await quote.ref.update({
                 content,
             });
 
             await send(message, {
                 embeds: [
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     successEmbed(`Quote ${quote.id} successfully edited.`),
                 ],
             });
@@ -141,6 +151,8 @@ export default class RentschCommand extends Subcommand {
 
         try {
             const quoteQuery = await quoteQueryRef.get();
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             if (quoteQuery.empty || !quoteQuery.docs[0].exists) {
                 await send(message, {
                     embeds: [errorEmbed(`No quote found with ID ${id}`)],
@@ -149,12 +161,16 @@ export default class RentschCommand extends Subcommand {
             }
 
             const quote = quoteQuery.docs[0];
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             await quote.ref.delete({
                 exists: true,
             });
 
             await send(message, {
                 embeds: [
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     successEmbed(`Quote ${quote.id} successfully deleted.`),
                 ],
             });

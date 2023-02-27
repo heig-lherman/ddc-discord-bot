@@ -61,10 +61,10 @@ const client = new SapphireClient({
         strategy: new ScheduledTaskRedisStrategy({
             bull: {
                 connection: {
-                    host,
-                    port,
-                    password,
-                    db,
+                    host: host ?? '',
+                    port: port ?? 0,
+                    password: password ?? '',
+                    db: db ?? 0,
                 },
                 prefix: 'ddc.queue-',
             },

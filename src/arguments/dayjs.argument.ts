@@ -3,7 +3,7 @@ import { Argument, Identifiers } from '@sapphire/framework';
 import { Result } from '@sapphire/result';
 import dayjs, { type Dayjs } from 'dayjs';
 
-const MESSAGES: Record<string, (args: Argument.Context) => string> = {
+const MESSAGES = {
     [Identifiers.ArgumentDateTooEarly]: ({ minimum }: Argument.Context) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         `The given date must be after ${new Date(minimum!).toISOString()}.`,
@@ -24,8 +24,8 @@ export class DayjsArgument extends Argument<Dayjs> {
         context: Argument.Context<Dayjs>,
     ): Argument.Result<Dayjs> {
         const resolved = DayjsArgument.resolveDate(parameter, {
-            minimum: context.minimum,
-            maximum: context.maximum,
+            minimum: context.minimum ?? 0,
+            maximum: context.maximum ?? 0,
         });
         return resolved.mapErrInto((identifier) =>
             this.error({
