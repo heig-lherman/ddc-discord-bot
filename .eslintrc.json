@@ -19,7 +19,9 @@
         "prettier/prettier": [
             "error"
         ],
-        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-unused-vars": ["error", {
+            "argsIgnorePattern": "^_"
+        }],
         "@typescript-eslint/explicit-member-accessibility": "off",
         "@typescript-eslint/no-object-literal-type-assertion": "off",
         "@typescript-eslint/prefer-interface": "off",

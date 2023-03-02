@@ -1,148 +1,45 @@
-import { successEmbed } from '#src/utils/embed-utils';
-import { getGuildCollection, getGuildData } from '#src/utils/firestore-utils';
+import { CounterCommand } from '#src/commands/support/counter-command';
 import { ApplyOptions } from '@sapphire/decorators';
-import type { Args } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
-import { Subcommand } from '@sapphire/plugin-subcommands';
-import { Guild, Message, EmbedBuilder } from 'discord.js';
-import { FieldValue } from 'firebase-admin/firestore';
+import { EmbedBuilder, Message } from 'discord.js';
 
-const getCounterValue = async (guild: Guild): Promise<number> => {
-    const guildData = await getGuildData(guild);
-    return guildData.data()?.counters?.beers ?? 0;
-};
-
-@ApplyOptions<Subcommand.Options>({
+@ApplyOptions<CounterCommand.Options>({
     name: 'beers',
     description: 'Beer counter (!beers help for all commands)',
+    counterId: 'beers',
+    embedTitle: '🍻 Beer counter',
+    embedColor: '#f28e1c',
     subcommands: [
-        { name: 'get', messageRun: 'get', default: true },
-        { name: '+', messageRun: 'plus' },
-        { name: '++', messageRun: 'plus' },
-        { name: '-', messageRun: 'minus' },
-        { name: '--', messageRun: 'minus' },
-        { name: '=', messageRun: 'set' },
+        { name: '++', messageRun: 'increment' },
+        { name: '--', messageRun: 'decrement' },
         { name: 'help', messageRun: 'help' },
     ],
     enabled: true,
-    runIn: 'GUILD_TEXT',
 })
-export default class BeersCommand extends Subcommand {
-    public async get(message: Message) {
-        const { logger } = this.container;
-        if (!message.guild) {
-            logger.error('No guild');
-            return;
-        }
-
-        await send(message, {
-            embeds: [
-                new EmbedBuilder()
-                    .setColor('#f28e1c')
-                    .setTitle('🍻 Beer counter')
-                    .setDescription(
-                        `Amount: **${await getCounterValue(message.guild)}**`,
-                    ),
-            ],
-        });
-    }
-
-    public async plus(message: Message) {
-        const { logger } = this.container;
-        if (!message.guild) {
-            logger.error('No guild');
-            return;
-        }
-
-        const guildDb = await getGuildCollection(message.guild);
-        await guildDb.set(
-            {
-                counters: {
-                    beers: FieldValue.increment(1) as unknown as number,
-                },
-            },
-            { merge: true },
-        );
-
-        await send(message, {
-            embeds: [
-                successEmbed(
-                    `Counter updated, new amount: ${await getCounterValue(
-                        message.guild,
-                    )}`,
-                ),
-            ],
-        });
-    }
-
-    public async minus(message: Message) {
-        const { logger } = this.container;
-        if (!message.guild) {
-            logger.error('No guild');
-            return;
-        }
-
-        const guildDb = await getGuildCollection(message.guild);
-        await guildDb.set(
-            {
-                counters: {
-                    beers: FieldValue.increment(-1) as unknown as number,
-                },
-            },
-            { merge: true },
-        );
-
-        await send(message, {
-            embeds: [
-                successEmbed(
-                    `Counter updated, new amount: ${await getCounterValue(
-                        message.guild,
-                    )}`,
-                ),
-            ],
-        });
-    }
-
-    public async set(message: Message, args: Args) {
-        const { logger } = this.container;
-        if (!message.guild) {
-            logger.error('No guild');
-            return;
-        }
-
-        const amount = await args.pick('number');
-
-        const guildDb = await getGuildCollection(message.guild);
-        await guildDb.set({ counters: { beers: amount } }, { merge: true });
-
-        await send(message, {
-            embeds: [successEmbed(`Counter updated, new amount: ${amount}`)],
-        });
-    }
-
+export default class BeersCommand extends CounterCommand {
     public async help(message: Message) {
         await send(message, {
             embeds: [
                 new EmbedBuilder()
                     .setColor('#ffcb87')
                     .setTitle('Counter commands')
-                    .setDescription('Manage the beer counter.')
+                    .setDescription(`Manage the beers counter.`)
                     .addFields(
                         {
                             name: 'Get the counter',
-                            value: '!beers [get]',
+                            value: `!beers [get]`,
                         },
                         {
                             name: 'Increment',
-                            value: '!beers ++',
+                            value: `!beers ++`,
                         },
                         {
                             name: 'Decrement',
-                            value: '!beers --',
+                            value: `!beers --`,
                         },
                         {
                             name: 'Set specific',
-                            value: '!beers = amount',
+                            value: `!beers = amount`,
                         },
                     ),
             ],
