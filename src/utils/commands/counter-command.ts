@@ -27,7 +27,7 @@ export abstract class CounterCommand<
     }
 
     protected formatValue(value: number): string {
-        return value.toFixed(2);
+        return value.toString(10);
     }
 
     protected async incrementValue(guild: Guild, offset = 1) {

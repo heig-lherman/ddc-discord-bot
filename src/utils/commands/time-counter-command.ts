@@ -1,5 +1,5 @@
-import type { CounterCommandOptions } from '#src/commands/support/counter-command';
-import { CounterCommand } from '#src/commands/support/counter-command';
+import type { CounterCommandOptions } from '#src/utils/commands/counter-command';
+import { CounterCommand } from '#src/utils/commands/counter-command';
 import { successEmbed } from '#src/utils/embed-utils';
 import type { Args, Command, PieceContext } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
@@ -15,8 +15,8 @@ export abstract class TimeCounterCommand<
         super(context, {
             ...options,
             subcommands: [
-                { name: '+=', messageRun: 'add' },
-                { name: '-=', messageRun: 'subtract' },
+                { name: '+=', messageRun: 'increment' },
+                { name: '-=', messageRun: 'decrement' },
                 ...(options.subcommands ?? []),
             ],
         });
