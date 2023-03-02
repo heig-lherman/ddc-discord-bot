@@ -3,7 +3,7 @@ import type { Snowflake } from 'discord.js';
 import type { MetaTypeCreator } from 'firelord';
 import { getFirelord } from 'firelord';
 
-export type CounterId = 'beers' | 'rentschTime';
+export type CounterId = 'beers' | 'hecheTime' | 'rentschTime';
 
 export type GuildCounters = { [key in CounterId]: number };
 export type GuildDocument = MetaTypeCreator<
