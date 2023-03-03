@@ -5,9 +5,7 @@ import type { Message } from 'discord.js';
 
 const sentences = [
     '<@493112987415216148> tais toi 😡 !',
-    '<@493112987415216148> ferme-la 😡 !',
     '<@493112987415216148> arrête de chanter 😡 !',
-    "<@493112987415216148> sors d'ici 😡 !",
     "<@493112987415216148> il est l'heure du café ☕ !",
     '<@493112987415216148> elle est où ta sugar-mommy ❤ ?',
     '<@493112987415216148> tu peux chanter une chanson 🥺 ?',

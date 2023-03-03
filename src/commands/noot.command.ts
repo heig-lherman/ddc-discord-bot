@@ -27,6 +27,7 @@ const buildRandomMessage = (): BaseMessageOptions => ({
         ${images[Math.floor(Math.random() * images.length)]}
     `,
 });
+
 @ApplyOptions<Command.Options>({
     name: 'noot',
     description: 'noot noot',
