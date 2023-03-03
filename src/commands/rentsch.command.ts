@@ -1,6 +1,6 @@
-import type { GuildQuote } from '#src/database/guild-quote';
+import { Quote, QuoteDocument, quoteRef } from '#src/database/guild-quote';
+import { getRandomDocument } from '#src/utils/database-utils';
 import { errorEmbed, successEmbed } from '#src/utils/embed-utils';
-import { converter, getGuildCollection } from '#src/utils/firestore-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import {
     fetch,
@@ -10,12 +10,9 @@ import {
 import type { Args } from '@sapphire/framework';
 import { reply, send } from '@sapphire/plugin-editable-commands';
 import { Subcommand } from '@sapphire/plugin-subcommands';
-import { EmbedBuilder, Guild, type Message } from 'discord.js';
-import {
-    type CollectionReference,
-    FieldPath,
-    type Query,
-} from 'firebase-admin/firestore';
+import { EmbedBuilder, type Guild, type Message } from 'discord.js';
+import type { CollectionReference, DocumentReference } from 'firelord';
+import { addDoc, deleteDoc, getDocs, updateDoc } from 'firelord';
 
 @ApplyOptions<Subcommand.Options>({
     name: 'rentsch',
@@ -34,6 +31,14 @@ import {
     runIn: 'GUILD_TEXT',
 })
 export default class RentschCommand extends Subcommand {
+    #getCollection(guild: Guild): CollectionReference<QuoteDocument> {
+        return quoteRef.collection(guild.id);
+    }
+
+    #getDocument(guild: Guild, doc: string): DocumentReference<QuoteDocument> {
+        return quoteRef.doc(guild.id, doc);
+    }
+
     public async get(message: Message) {
         const { logger } = this.container;
         if (!message.guild) {
@@ -41,29 +46,20 @@ export default class RentschCommand extends Subcommand {
             return;
         }
 
-        const quotesQuery = await this.getQuotesQuery(message.guild);
-        const size = await quotesQuery
-            .select(FieldPath.documentId())
-            .get()
-            .then((c) => c.docs.length);
-
-        const randomIndex = Math.floor(Math.random() * size);
-        const quote = await quotesQuery.offset(randomIndex).limit(1).get();
-
-        if (quote.empty) {
-            await send(message, {
-                embeds: [errorEmbed('There are no quotes')],
+        const quoteDoc = await getRandomDocument(
+            this.#getCollection(message.guild),
+        );
+        if (!quoteDoc) {
+            await reply(message, {
+                embeds: [errorEmbed('No quotes found')],
             });
+
             return;
         }
 
         const embed = new EmbedBuilder()
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            .setDescription(quote.docs[0].data().content)
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            .setFooter({ text: `© Rentsch - ID: ${quote.docs[0].id}` });
+            .setDescription(quoteDoc.data().content)
+            .setFooter({ text: `© Rentsch - ID: ${quoteDoc.id}` });
 
         await send(message, {
             embeds: [embed],
@@ -78,12 +74,9 @@ export default class RentschCommand extends Subcommand {
         }
 
         const content = await args.rest('string');
+        const quote: Quote = { category: 'rentsch', content };
 
-        const quote: GuildQuote = { category: 'rentsch', content };
-
-        const quotesDb = await this.getQuotesCollection(message.guild);
-        const doc = await quotesDb.add(quote);
-
+        const doc = await addDoc(this.#getCollection(message.guild), quote);
         await send(message, {
             embeds: [successEmbed(`Quote successfully added.\nID: ${doc.id}`)],
         });
@@ -99,33 +92,13 @@ export default class RentschCommand extends Subcommand {
         const id = await args.pick('string');
         const content = await args.rest('string');
 
-        const quotesDb = await this.getQuotesQuery(message.guild);
-        const quoteQueryRef = quotesDb.where(FieldPath.documentId(), '==', id);
-
         try {
-            const quoteQuery = await quoteQueryRef.get();
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            if (quoteQuery.empty || !quoteQuery.docs[0].exists) {
-                await send(message, {
-                    embeds: [errorEmbed(`No quote found with ID ${id}`)],
-                });
-                return;
-            }
-
-            const quote = quoteQuery.docs[0];
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            await quote.ref.update({
+            await updateDoc(this.#getDocument(message.guild, id), {
                 content,
             });
 
             await send(message, {
-                embeds: [
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    successEmbed(`Quote ${quote.id} successfully edited.`),
-                ],
+                embeds: [successEmbed(`Quote ${id} successfully edited.`)],
             });
 
             return;
@@ -146,33 +119,10 @@ export default class RentschCommand extends Subcommand {
 
         const id = await args.pick('string');
 
-        const quotesDb = await this.getQuotesQuery(message.guild);
-        const quoteQueryRef = quotesDb.where(FieldPath.documentId(), '==', id);
-
         try {
-            const quoteQuery = await quoteQueryRef.get();
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            if (quoteQuery.empty || !quoteQuery.docs[0].exists) {
-                await send(message, {
-                    embeds: [errorEmbed(`No quote found with ID ${id}`)],
-                });
-                return;
-            }
-
-            const quote = quoteQuery.docs[0];
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            await quote.ref.delete({
-                exists: true,
-            });
-
+            await deleteDoc(this.#getDocument(message.guild, id));
             await send(message, {
-                embeds: [
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    successEmbed(`Quote ${quote.id} successfully deleted.`),
-                ],
+                embeds: [successEmbed(`Quote ${id} successfully deleted.`)],
             });
 
             return;
@@ -198,7 +148,6 @@ export default class RentschCommand extends Subcommand {
             return;
         }
 
-        const guildDb = await this.getQuotesCollection(message.guild);
         await Promise.all(
             message.attachments
                 .filter(
@@ -217,7 +166,7 @@ export default class RentschCommand extends Subcommand {
             Promise.all(
                 allQuotes.flatMap((quoteFile) =>
                     quoteFile.map((content) =>
-                        guildDb.doc().set({
+                        addDoc(this.#getCollection(message.guild!), {
                             category: 'rentsch',
                             content,
                         }),
@@ -238,16 +187,14 @@ export default class RentschCommand extends Subcommand {
             return;
         }
 
-        const quotesQueryRef = await this.getQuotesQuery(message.guild);
-        const quotesQuery = await quotesQueryRef.get();
-
+        const quotes = await getDocs(this.#getCollection(message.guild));
         await send(message, {
             content: '✅  Export successful',
             files: [
                 {
                     attachment: Buffer.from(
                         JSON.stringify(
-                            quotesQuery.docs.map((d) => d.data().content),
+                            quotes.docs.map((d) => d.data().content),
                             null,
                             2,
                         ),
@@ -288,19 +235,5 @@ export default class RentschCommand extends Subcommand {
                     ),
             ],
         });
-    }
-
-    private getQuotesCollection(
-        guild: Guild,
-    ): Promise<CollectionReference<GuildQuote>> {
-        return getGuildCollection(guild).then((c) =>
-            c.collection('quotes').withConverter(converter<GuildQuote>()),
-        );
-    }
-
-    private getQuotesQuery(guild: Guild): Promise<Query<GuildQuote>> {
-        return this.getQuotesCollection(guild).then((qc) =>
-            qc.where('category', '==', 'rentsch'),
-        );
     }
 }
