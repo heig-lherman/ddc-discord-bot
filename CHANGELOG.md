@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.4.1...v1.5.0) (2023-03-03)
+
+
+### Features
+
+* **cmd:help:** make help command chat-input runnable ([a2256ea](https://github.com/Lutonite/heig-ddc-discord-bot/commit/a2256eaba56400b2b230e5bb2c5cabe5aa9376af))
+* **cmd:jhht:** add JHH time counter ([069cb86](https://github.com/Lutonite/heig-ddc-discord-bot/commit/069cb861f715df1299d037516698f711206f401e))
+* **cmd:menus:** upgrade to new top-chef api ([ce2d101](https://github.com/Lutonite/heig-ddc-discord-bot/commit/ce2d101bb49f120a8f285abab88a682ebc5b4d3d)), closes [#15](https://github.com/Lutonite/heig-ddc-discord-bot/issues/15)
+* **counters:** add abstractions for various types of counters ([17c00b8](https://github.com/Lutonite/heig-ddc-discord-bot/commit/17c00b8687fe6cb12d9b308c4996119efd8a926d)), closes [#3](https://github.com/Lutonite/heig-ddc-discord-bot/issues/3)
+* **global:** command migration to d.js 14 ([5f60e78](https://github.com/Lutonite/heig-ddc-discord-bot/commit/5f60e7845ecf7506cc5b01d7e7636b5620ea5d1b))
+* move quotes to type-safe firestore queries ([a3e14a8](https://github.com/Lutonite/heig-ddc-discord-bot/commit/a3e14a8b5bc84bc19283588a64f937f99f1ba0df))
+* **twitch:** migrate to Twitch EventSub via WS ([70e9fda](https://github.com/Lutonite/heig-ddc-discord-bot/commit/70e9fda6e881af0bc17660f9b777813d0aa12a65)), closes [#19](https://github.com/Lutonite/heig-ddc-discord-bot/issues/19)
+
+
+### Bug Fixes
+
+* **counters:** move abstract counters out of commands parent folder ([a471424](https://github.com/Lutonite/heig-ddc-discord-bot/commit/a4714240cab00f856015e7951cce49c23918e91b))
+* **sfv3-beers:** migrate beers to subcommands v3 ([fc23d5c](https://github.com/Lutonite/heig-ddc-discord-bot/commit/fc23d5c87f8a75de31aabdd973b2c84e7a37ea3e))
+* **sfv3-dayjs-arg:** migrate dayjs argument type to @sapphire/result v2 ([1fc2fe7](https://github.com/Lutonite/heig-ddc-discord-bot/commit/1fc2fe7ff86abc26feee31f5a7620d40e9cca641))
+* **sfv3-events:** upgrade listeners to new precondition events in framework v3 ([a60579e](https://github.com/Lutonite/heig-ddc-discord-bot/commit/a60579e7c5f9b05e5973ee633256e60ac36f616d))
+* **sfv3-hw:** migrate homework to subcommands v3 ([ca83f95](https://github.com/Lutonite/heig-ddc-discord-bot/commit/ca83f957d076e041545064447efac52cc9ef3a1a))
+* **sfv3-main:** load message and command listeners by default ([490b885](https://github.com/Lutonite/heig-ddc-discord-bot/commit/490b885cc2b08c6ab061e0807747cb513085204a))
+* **sfv3-owner-precondition:** migrate owner-only precondition to framework v3 ([6a9100b](https://github.com/Lutonite/heig-ddc-discord-bot/commit/6a9100b68e335617af66ddbc977a8919e08480af))
+* **sfv3-rrh:** migrate rrh to subcommands v3 ([9ef5a34](https://github.com/Lutonite/heig-ddc-discord-bot/commit/9ef5a34eb825b03d7c9d8082d97a63ae1f85179d))
+* **sfv3-rrht:** migrate rrht to subcommands v3 ([6f7dc54](https://github.com/Lutonite/heig-ddc-discord-bot/commit/6f7dc54f5fa437e1cab1e64a34de9800ee4fc3a4))
+* **sfv3-scheduled-tasks:** migrate to bullmq for @sapphire/plugin-scheduled-tasks v5 ([21e622a](https://github.com/Lutonite/heig-ddc-discord-bot/commit/21e622a84b7b93941ab640dc53d4a2acbca31cac))
+* **ts-4.8:** firestore converter type should extend DocumentData ([d04176a](https://github.com/Lutonite/heig-ddc-discord-bot/commit/d04176aba167173acc2796a40ffd38e20e1fbb52))
+
+
+### Others
+
+* **cmd:time-counters:** adjust embed titles to describe what counter is referred ([51d98c8](https://github.com/Lutonite/heig-ddc-discord-bot/commit/51d98c8084e962583fe01089650c3ef103bfc5a2))
+* **deps:** override jose for firebase-admin until release (resolves vuln) ([26eb17d](https://github.com/Lutonite/heig-ddc-discord-bot/commit/26eb17d62ae9e0b2ad61c997ec3ceafa20f1f529))
+* **deps:** upgrade @sapphire/* for framework v3 ([4ff0dd5](https://github.com/Lutonite/heig-ddc-discord-bot/commit/4ff0dd56862274495e44d96327c4785864651160))
+* **deps:** upgrade @twurple/* to v5.2.4 ([e3c1892](https://github.com/Lutonite/heig-ddc-discord-bot/commit/e3c1892d342c28cd419ee9f01ee3c8b782c167ae))
+* **deps:** upgrade @types/node to v18.7.23 ([2e9e192](https://github.com/Lutonite/heig-ddc-discord-bot/commit/2e9e1923e5701e0d12cd52c1f7af88b692fe288a))
+* **deps:** upgrade bull to v4.9.0 ([7153729](https://github.com/Lutonite/heig-ddc-discord-bot/commit/71537292a8c3a4f35d8a76e2b1b29b432f98a823))
+* **deps:** upgrade commitizen to v4.2.5 ([d4c713c](https://github.com/Lutonite/heig-ddc-discord-bot/commit/d4c713c03592b58f854311d510154f2bc25b4282))
+* **deps:** upgrade dayjs to v1.11.5 ([5ad677b](https://github.com/Lutonite/heig-ddc-discord-bot/commit/5ad677b042f30248f2b89935996c382861126a57))
+* **deps:** upgrade deps and sapphire framework ([8571166](https://github.com/Lutonite/heig-ddc-discord-bot/commit/8571166a700d87d9cff917265800e1412fc47e98))
+* **deps:** upgrade discord-api-types to v0.37.11 ([c5b1ecc](https://github.com/Lutonite/heig-ddc-discord-bot/commit/c5b1ecc8ed2e162cebdbf08891ed763c420ee002))
+* **deps:** upgrade discord.js to v13.9.2 ([bb9c729](https://github.com/Lutonite/heig-ddc-discord-bot/commit/bb9c729f50f85cc1a35d5cdd2d872df03669bced))
+* **deps:** upgrade dotenv to v16.0.2 ([9a88de9](https://github.com/Lutonite/heig-ddc-discord-bot/commit/9a88de96d842f99b9fb2b16c599533a2d983dd4c))
+* **deps:** upgrade firebase-admin to v11.0.1 ([fa59434](https://github.com/Lutonite/heig-ddc-discord-bot/commit/fa594344cab57be8c25960795359854df253f967))
+* **deps:** upgrade giphy api to v4.4.0 ([243edd2](https://github.com/Lutonite/heig-ddc-discord-bot/commit/243edd24528d18e4ca20f3fc9ab9023aa72f3d99))
+* **deps:** upgrade ioredis to v5.2.3 ([d3c4ca4](https://github.com/Lutonite/heig-ddc-discord-bot/commit/d3c4ca49da19f611d346f1f0379a9657f66614e6))
+* **deps:** upgrade linting utils ([5233418](https://github.com/Lutonite/heig-ddc-discord-bot/commit/52334184f54ac4daaa36f7daa2c788f7af606809))
+* **deps:** upgrade typescript to v4.7.4 & full package update ([dce63ce](https://github.com/Lutonite/heig-ddc-discord-bot/commit/dce63cefe0abf1e66b5a7e2a17dbf850fd46df02))
+* **deps:** upgrade typescript to v4.8.4 ([4fca7e3](https://github.com/Lutonite/heig-ddc-discord-bot/commit/4fca7e3f78b6928c5c6ab6ab7885de148e4d0435))
+* **pjson:** remove old dep override and upgrade engine to latest LTS ([f8b9e34](https://github.com/Lutonite/heig-ddc-discord-bot/commit/f8b9e34f1c56ba71a4dd01c47529673190c05ce2))
+* prepare for firelord ([93a9d25](https://github.com/Lutonite/heig-ddc-discord-bot/commit/93a9d25b2be80d4c320df25aa63d1b6b9dea3a78))
+* **scripts:** add runner with devTools inspection ([2839647](https://github.com/Lutonite/heig-ddc-discord-bot/commit/283964789265562f14790876554ca80b8a9f854b))
+
+
+### Code Refactoring
+
+* **cmd-menus:** remove deprecated usage of MessageEmbed#addField() & fix empty content issue ([fba42fb](https://github.com/Lutonite/heig-ddc-discord-bot/commit/fba42fb8f5f29a2f4f52771571a9e5722b0a8972))
+* **lstnr-stream-online:** remove deprecated usage of MessageEmbed#addField() ([f0c5cfe](https://github.com/Lutonite/heig-ddc-discord-bot/commit/f0c5cfec7748c412551ce348709032fce66618f0))
+* **task-canteen-menu:** remove deprecated usage of MessageEmbed#addField() & fix empty value ([b3d51f9](https://github.com/Lutonite/heig-ddc-discord-bot/commit/b3d51f90e9873d6a38d5994cd12a5a4f4c9e4ad7))
+* various command fixes ([d2557ba](https://github.com/Lutonite/heig-ddc-discord-bot/commit/d2557ba0fff75539ea315a286e9b2c0a07e5b5fd))
+
 ### [1.4.1](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.4.0...v1.4.1) (2022-09-28)
 
 
