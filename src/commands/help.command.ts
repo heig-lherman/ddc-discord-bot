@@ -1,8 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
 import type { APIEmbedField, Message } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
     name: 'help',
@@ -10,7 +10,16 @@ import { EmbedBuilder } from 'discord.js';
     enabled: true,
 })
 export default class HelpCommand extends Command {
-    public override async messageRun(message: Message) {
+    override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+        registry.registerChatInputCommand(
+            (builder) => {
+                builder.setName(this.name).setDescription(this.description);
+            },
+            { idHints: ['1081183594808102982'] },
+        );
+    }
+
+    #getHelpEmbed(): EmbedBuilder {
         const commandFields: APIEmbedField[] = [];
         this.container.client.stores
             .get('commands')
@@ -27,13 +36,24 @@ export default class HelpCommand extends Command {
                 });
             });
 
-        const embed = new EmbedBuilder()
+        return new EmbedBuilder()
             .setColor('#2DD4BF')
             .setTitle('All available commands')
             .addFields(...commandFields);
+    }
 
+    public override async chatInputRun(
+        interaction: ChatInputCommandInteraction,
+    ) {
+        return interaction.reply({
+            embeds: [this.#getHelpEmbed()],
+            ephemeral: true,
+        });
+    }
+
+    public override async messageRun(message: Message) {
         return send(message, {
-            embeds: [embed],
+            embeds: [this.#getHelpEmbed()],
         });
     }
 }
