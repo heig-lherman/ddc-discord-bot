@@ -11,7 +11,7 @@ import { EmbedBuilder, Message } from 'discord.js';
         The break time JHH stole from us. (!jhht help for all commands)
     `,
     counterId: 'hecheTime',
-    embedTitle: '⏰ Lost time',
+    embedTitle: '⏰ Lost time with JHH',
     embedColor: '#71cfcf',
     subcommands: [{ name: 'help', messageRun: 'help' }],
     enabled: true,

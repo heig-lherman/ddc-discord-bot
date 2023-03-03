@@ -11,7 +11,7 @@ import { EmbedBuilder, Message } from 'discord.js';
         The break time RRH stole from us. (!rrht help for all commands)
     `,
     counterId: 'rentschTime',
-    embedTitle: '⏰ Lost time',
+    embedTitle: '⏰ Lost time with RRH',
     embedColor: '#71cfcf',
     subcommands: [{ name: 'help', messageRun: 'help' }],
     enabled: true,
