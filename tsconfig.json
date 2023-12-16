@@ -8,6 +8,9 @@
         "baseUrl": "./src",
         "rootDir": "src",
         "outDir": "dist",
+        "lib": [
+            "ESNext"
+        ],
         "noUncheckedIndexedAccess": true,
         "skipLibCheck": true,
         "tsBuildInfoFile": "dist/.tsbuildinfo"

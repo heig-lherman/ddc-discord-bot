@@ -1,5 +1,5 @@
 import {
-    APIDayMenuModel,
+    ApiMenu,
     buildDayMenuEmbed,
     queryDayMenu,
 } from '../services/heig-canteen-menu.service';
@@ -36,7 +36,7 @@ export default class CanteenMenuTask extends ScheduledTask {
 
     private async handleGuildMenu(
         guild: Guild,
-        menu: APIDayMenuModel,
+        menu: ApiMenu[],
     ): Promise<void> {
         const { logger } = this.container;
 

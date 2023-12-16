@@ -1,3 +1,4 @@
+import { groupBy } from '../utils/array-utils';
 import { fieldValueOrEmpty } from '../utils/embed-utils';
 import { capitalize } from '../utils/string-utils';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
@@ -7,31 +8,34 @@ import { EmbedBuilder } from 'discord.js';
 
 const DAY_FORMAT = 'DD MMMM YYYY';
 
-const WEEK_API_URL = 'https://top-chef-intra-api.blacktree.io/weeks/current';
-const DAY_API_URL = 'https://apix.blacktree.io/top-chef/today';
+const API_URL = 'https://top-chef-2023.vercel.app/menus';
 
-const apiHeaders = new Headers();
-apiHeaders.append('x-api-key', process.env.TOP_CHEF_API_KEY ?? '');
-
-export const queryWeekMenu = async (): Promise<APIWeekMenuModel> =>
-    fetch<APIWeekMenuModel>(
-        WEEK_API_URL,
-        { headers: apiHeaders },
+export const queryWeekMenu = async (): Promise<ApiMenu[]> =>
+    fetch<ApiMenu[]>(
+        oneLineTrim`
+            ${API_URL}
+                ?from=${dayjs().startOf('week').format('YYYY-MM-DD')}
+                &to=${dayjs().endOf('week').format('YYYY-MM-DD')}
+        `,
         FetchResultTypes.JSON,
     );
 
-export const queryDayMenu = async (): Promise<APIDayMenuModel> =>
-    fetch<APIDayMenuModel>(DAY_API_URL, FetchResultTypes.JSON);
+export const queryDayMenu = async (): Promise<ApiMenu[]> =>
+    fetch<ApiMenu[]>(
+        oneLineTrim`
+            ${API_URL}
+                ?from=${dayjs().format('YYYY-MM-DD')}
+                &to=${dayjs().format('YYYY-MM-DD')}
+        `,
+        FetchResultTypes.JSON,
+    );
 
-export const isMenuIncomplete = (menu: APIMenuModel) =>
-    !menu.mainCourse || menu.mainCourse.length === 0 || !menu.mainCourse[0];
+export const isMenuIncomplete = (menu: ApiMenu) =>
+    !menu.main || menu.main.length === 0 || !menu.main[0];
 
-export const addMenusToFields = (
-    embed: EmbedBuilder,
-    menus: APIMenuModel[],
-) => {
+export const addMenusToFields = (embed: EmbedBuilder, menus: ApiMenu[]) => {
     let counter = 0;
-    Object.values(menus).forEach((m) => {
+    menus.forEach((m) => {
         if (isMenuIncomplete(m)) {
             return;
         }
@@ -40,69 +44,54 @@ export const addMenusToFields = (
         embed.addFields({
             name: title,
             value: fieldValueOrEmpty(stripIndent`
-                    ${m.starter}
-                    ${m.mainCourse.join('\n')}
-                    ${m.dessert}
-                `),
+                ${m.starter}
+                ${m.main.join('\n')}
+                ${m.dessert}
+            `),
             inline: true,
         });
     });
 };
 
-export const buildWeekMenuEmbed = (menu: APIWeekMenuModel): EmbedBuilder => {
+export const buildWeekMenuEmbed = (menu: ApiMenu[]): EmbedBuilder => {
     const embed = new EmbedBuilder()
         .setColor('#EA580C')
-        .setTitle(`:fork_and_knife: Menus de la semaine ${menu.week}`)
+        .setTitle(`:fork_and_knife: Menus de la semaine ${dayjs().week()}`)
         .setFooter({
             text: oneLine`
                 Semaine
-                du ${dayjs(menu.monday).format(DAY_FORMAT)}
-                au ${dayjs(menu.friday).format(DAY_FORMAT)}
+                du ${dayjs(menu[0]?.date).format(DAY_FORMAT)}
+                au ${dayjs(menu[menu.length]?.date).format(DAY_FORMAT)}
             `,
         });
 
-    Object.values(menu.days).forEach((dayMenu: APIDayMenuModel) => {
+    Object.entries(groupBy(menu, (m) => m.date)).forEach(([date, menus]) => {
         embed.addFields({
             name: '-'.repeat(80),
             value: oneLineTrim`
-                **${capitalize(dayjs(dayMenu.day).format('dddd'))}**
-            `,
+                    **${capitalize(dayjs(date).format('dddd'))}**
+                `,
             inline: false,
         });
-        addMenusToFields(embed, dayMenu.menus);
+        addMenusToFields(embed, menus);
     });
 
     return embed;
 };
 
-export const buildDayMenuEmbed = (menu: APIDayMenuModel): EmbedBuilder => {
+export const buildDayMenuEmbed = (menu: ApiMenu[]): EmbedBuilder => {
     const embed = new EmbedBuilder().setColor('#EA580C').setTitle(
         oneLine`:fork_and_knife: Menus du
-                ${dayjs(menu.day).format('dddd LL')}`,
+                ${dayjs(menu[0]?.date).format('dddd LL')}`,
     );
-    addMenusToFields(embed, menu.menus);
+    addMenusToFields(embed, menu);
     return embed;
 };
 
-export interface APIWeekMenuModel {
+export interface ApiMenu {
     _id: string;
-    week: number;
-    year: number;
-    monday: string;
-    friday: string;
-    lastSave: string;
-    lastPublish: string;
-    days: APIDayMenuModel[];
-}
-
-export interface APIDayMenuModel {
-    day: string;
-    menus: APIMenuModel[];
-}
-
-export interface APIMenuModel {
+    date: string;
     starter: string;
-    mainCourse: string[];
+    main: string[];
     dessert: string;
-    containsPork: boolean;
 }
