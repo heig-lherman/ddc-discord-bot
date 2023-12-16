@@ -1,9 +1,9 @@
-import type { CounterId, GuildCounters } from '#src/database/guild-data';
-import { guildRef } from '#src/database/guild-data';
-import { successEmbed } from '#src/utils/embed-utils';
-import { capitalize } from '#src/utils/string-utils';
-import type { IncrementableNumbers } from '#src/utils/types';
-import type { Args, Command, PieceContext } from '@sapphire/framework';
+import type { CounterId, GuildCounters } from '../../database/guild-data';
+import { guildRef } from '../../database/guild-data';
+import { successEmbed } from '../embed-utils';
+import { capitalize } from '../string-utils';
+import type { IncrementableNumbers } from '../types';
+import type { Args, Command } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import type { CacheType, ColorResolvable, Guild, Message } from 'discord.js';
@@ -14,7 +14,7 @@ export abstract class CounterCommand<
     PreParseReturn extends Args = Args,
     O extends CounterCommand.Options = CounterCommand.Options,
 > extends Subcommand<PreParseReturn, O> {
-    protected constructor(context: PieceContext, options: O) {
+    protected constructor(context: Subcommand.LoaderContext, options: O) {
         super(context, {
             ...options,
             subcommands: [

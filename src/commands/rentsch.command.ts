@@ -1,6 +1,6 @@
-import { Quote, QuoteDocument, quoteRef } from '#src/database/guild-quote';
-import { getRandomDocument } from '#src/utils/database-utils';
-import { errorEmbed, successEmbed } from '#src/utils/embed-utils';
+import { Quote, QuoteDocument, quoteRef } from '../database/guild-quote';
+import { getRandomDocument } from '../utils/database-utils';
+import { errorEmbed, successEmbed } from '../utils/embed-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import {
     fetch,
@@ -100,8 +100,6 @@ export default class RentschCommand extends Subcommand {
             await send(message, {
                 embeds: [successEmbed(`Quote ${id} successfully edited.`)],
             });
-
-            return;
         } catch (e: unknown) {
             logger.debug('[firestore] update error', e);
             await send(message, {
@@ -124,8 +122,6 @@ export default class RentschCommand extends Subcommand {
             await send(message, {
                 embeds: [successEmbed(`Quote ${id} successfully deleted.`)],
             });
-
-            return;
         } catch (e: unknown) {
             logger.debug('[firestore] update error', e);
             await send(message, {
@@ -156,12 +152,7 @@ export default class RentschCommand extends Subcommand {
                             FetchMediaContentTypes.JSON,
                         ) ?? false,
                 )
-                .map(({ attachment }) =>
-                    fetch<string[]>(
-                        attachment as string,
-                        FetchResultTypes.JSON,
-                    ),
-                ),
+                .map(({ url }) => fetch<string[]>(url, FetchResultTypes.JSON)),
         ).then((allQuotes) =>
             Promise.all(
                 allQuotes.flatMap((quoteFile) =>

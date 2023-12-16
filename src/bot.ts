@@ -1,45 +1,12 @@
 // eslint-disable-next-line import/order
 import 'dotenv/config';
+import './lib/setup';
 
-import { subscribeTwitchEvents } from '#src/services/twitch-events.service';
-import dayjsParser from '#src/utils/dayjs-parser';
+import { subscribeTwitchEvents } from './services/twitch-events.service';
 import { container, LogLevel, SapphireClient } from '@sapphire/framework';
-import '@sapphire/plugin-editable-commands/register';
-import '@sapphire/plugin-hmr/register';
-import '@sapphire/plugin-logger/register';
-import { ScheduledTaskRedisStrategy } from '@sapphire/plugin-scheduled-tasks/register-redis';
-import dayjs from 'dayjs';
-import 'dayjs/locale/fr-ch';
-import duration from 'dayjs/plugin/duration';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import utc from 'dayjs/plugin/utc';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
-import weekday from 'dayjs/plugin/weekday';
 import { GatewayIntentBits } from 'discord.js';
-import { cert, initializeApp } from 'firebase-admin/app';
-import { type Firestore, getFirestore } from 'firebase-admin/firestore';
-import IORedis, { type Redis } from 'ioredis';
 
-dayjs.extend(utc);
-dayjs.extend(weekOfYear);
-dayjs.extend(weekday);
-dayjs.extend(localizedFormat);
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
-dayjs.extend(dayjsParser);
-
-dayjs.locale('fr-ch');
-
-initializeApp({
-    credential: cert(process.env.FIREBASE_CREDENTIALS_PATH ?? ''),
-});
-
-container.database = getFirestore();
-
-container.redisClient = new IORedis(process.env.REDIS_URL ?? '');
 const { host, port, password, db } = container.redisClient.options;
-
 const client = new SapphireClient({
     defaultPrefix: '!',
     intents: [
@@ -58,49 +25,48 @@ const client = new SapphireClient({
         level: LogLevel.Debug,
     },
     tasks: {
-        strategy: new ScheduledTaskRedisStrategy({
-            bull: {
-                connection: {
-                    host: host ?? '',
-                    port: port ?? 0,
-                    password: password ?? '',
-                    db: db ?? 0,
-                },
-                prefix: 'ddc.queue-',
+        bull: {
+            connection: {
+                host: host ?? '',
+                port: port ?? 0,
+                password: password ?? '',
+                db: db ?? 0,
             },
-        }),
-    },
-    hmr: {
-        enabled: process.env.NODE_ENV === 'development',
+            prefix: 'ddc.queue-',
+        },
     },
     loadMessageCommandListeners: true,
     loadDefaultErrorListeners: true,
     loadSubcommandErrorListeners: true,
 });
 
-client
-    .login(process.env.DISCORD_TOKEN)
-    .then(() => {
-        client.logger.info('Successfully connected');
-        client.logger.debug(
-            'Loaded',
-            client.stores.get('commands').size,
-            'commands',
-        );
-        client.logger.debug(
-            'Loaded',
-            client.stores.get('scheduled-tasks').size,
-            'tasks',
-        );
+const main = async () => {
+    try {
+        client.logger.info('Logging in');
 
-        subscribeTwitchEvents(client).catch(client.logger.error);
-    })
-    // eslint-disable-next-line no-console
-    .catch(console.error);
+        await client.login(process.env.DISCORD_TOKEN).then(() => {
+            client.logger.info('Successfully connected');
+            client.logger.debug(
+                'Loaded',
+                client.stores.get('commands').size,
+                'commands',
+            );
+            client.logger.debug(
+                'Loaded',
+                client.stores.get('scheduled-tasks').size,
+                'tasks',
+            );
 
-declare module '@sapphire/pieces' {
-    interface Container {
-        redisClient: Redis;
-        database: Firestore;
+            subscribeTwitchEvents(client).catch(client.logger.error);
+        });
+
+        client.logger.info('logged in');
+    } catch (error) {
+        client.logger.fatal(error);
+        client.destroy();
+        process.exit(1);
     }
-}
+};
+
+// eslint-disable-next-line no-console
+main().catch(console.error);

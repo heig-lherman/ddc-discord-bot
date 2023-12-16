@@ -2,8 +2,8 @@ import {
     APIDayMenuModel,
     buildDayMenuEmbed,
     queryDayMenu,
-} from '#src/services/heig-canteen-menu.service';
-import { findChannelByName } from '#src/utils/discord-collection-utils';
+} from '../services/heig-canteen-menu.service';
+import { findChannelByName } from '../utils/discord-collection-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks';
 import type { Guild, Snowflake } from 'discord.js';

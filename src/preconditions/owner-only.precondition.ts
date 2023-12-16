@@ -1,4 +1,4 @@
-import { Config } from '#src/Config';
+import { Config } from '../config';
 import { ApplyOptions } from '@sapphire/decorators';
 import { AllFlowsPrecondition, Precondition } from '@sapphire/framework';
 import type {

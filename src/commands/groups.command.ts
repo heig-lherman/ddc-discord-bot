@@ -1,5 +1,5 @@
-import { shuffleArray } from '#src/utils/array-utils';
-import { errorEmbed } from '#src/utils/embed-utils';
+import { shuffleArray } from '../utils/array-utils';
+import { errorEmbed } from '../utils/embed-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command } from '@sapphire/framework';
 import { reply, send } from '@sapphire/plugin-editable-commands';

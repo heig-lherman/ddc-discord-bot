@@ -1,4 +1,4 @@
-import { TimeCounterCommand } from '#src/utils/commands/time-counter-command';
+import { TimeCounterCommand } from '../utils/commands/time-counter-command';
 import { ApplyOptions } from '@sapphire/decorators';
 import { send } from '@sapphire/plugin-editable-commands';
 import { oneLine } from 'common-tags';

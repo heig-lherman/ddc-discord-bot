@@ -1,4 +1,4 @@
-import { errorEmbed } from '#src/utils/embed-utils';
+import { errorEmbed } from '../utils/embed-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import {
     Listener,

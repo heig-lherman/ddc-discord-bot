@@ -1,5 +1,5 @@
-import { fieldValueOrEmpty } from '#src/utils/embed-utils';
-import { capitalize } from '#src/utils/string-utils';
+import { fieldValueOrEmpty } from '../utils/embed-utils';
+import { capitalize } from '../utils/string-utils';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 import { oneLine, oneLineTrim, stripIndent } from 'common-tags';
 import dayjs from 'dayjs';

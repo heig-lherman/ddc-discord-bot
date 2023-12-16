@@ -3,7 +3,7 @@ import {
     buildWeekMenuEmbed,
     queryDayMenu,
     queryWeekMenu,
-} from '#src/services/heig-canteen-menu.service';
+} from '../services/heig-canteen-menu.service';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ApplicationCommandRegistry, Args, Command } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';

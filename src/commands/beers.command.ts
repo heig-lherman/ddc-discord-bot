@@ -1,4 +1,4 @@
-import { CounterCommand } from '#src/utils/commands/counter-command';
+import { CounterCommand } from '../utils/commands/counter-command';
 import { ApplyOptions } from '@sapphire/decorators';
 import { send } from '@sapphire/plugin-editable-commands';
 import { EmbedBuilder, Message } from 'discord.js';

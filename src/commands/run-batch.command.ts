@@ -1,4 +1,4 @@
-import { errorEmbed, successEmbed } from '#src/utils/embed-utils';
+import { errorEmbed, successEmbed } from '../utils/embed-utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command } from '@sapphire/framework';
 import { reply } from '@sapphire/plugin-editable-commands';

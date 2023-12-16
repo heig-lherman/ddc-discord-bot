@@ -1,4 +1,4 @@
-import type { GuildDocument } from '#src/database/guild-data';
+import type { GuildDocument } from './guild-data';
 import { container } from '@sapphire/framework';
 import type { MetaTypeCreator } from 'firelord';
 import { getFirelord } from 'firelord';

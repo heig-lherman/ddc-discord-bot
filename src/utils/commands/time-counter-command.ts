@@ -1,8 +1,9 @@
-import type { CounterCommandOptions } from '#src/utils/commands/counter-command';
-import { CounterCommand } from '#src/utils/commands/counter-command';
-import { successEmbed } from '#src/utils/embed-utils';
-import type { Args, Command, PieceContext } from '@sapphire/framework';
+import type { CounterCommandOptions } from './counter-command';
+import { CounterCommand } from './counter-command';
+import { successEmbed } from '../embed-utils';
+import type { Args, Command } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
+import { Subcommand } from '@sapphire/plugin-subcommands';
 import dayjs from 'dayjs';
 import type { CacheType, Message } from 'discord.js';
 import ms from 'ms';
@@ -11,7 +12,7 @@ export abstract class TimeCounterCommand<
     PreParseReturn extends Args = Args,
     O extends CounterCommand.Options = CounterCommand.Options,
 > extends CounterCommand<PreParseReturn, O> {
-    protected constructor(context: PieceContext, options: O) {
+    protected constructor(context: Subcommand.LoaderContext, options: O) {
         super(context, {
             ...options,
             subcommands: [
