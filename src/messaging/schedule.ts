@@ -87,7 +87,10 @@ function createBaseCourse(): Course {
 }
 
 export const Course = {
-    encode(message: Course, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    encode(
+        message: Course,
+        writer: _m0.Writer = _m0.Writer.create(),
+    ): _m0.Writer {
         for (const v of message.classes) {
             Class.encode(v!, writer.uint32(10).fork()).ldelim();
         }
@@ -95,7 +98,8 @@ export const Course = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Course {
-        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        const reader =
+            input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseCourse();
         while (reader.pos < end) {
@@ -119,7 +123,9 @@ export const Course = {
 
     fromJSON(object: any): Course {
         return {
-            classes: globalThis.Array.isArray(object?.classes) ? object.classes.map((e: any) => Class.fromJSON(e)) : [],
+            classes: globalThis.Array.isArray(object?.classes)
+                ? object.classes.map((e: any) => Class.fromJSON(e))
+                : [],
         };
     },
 
@@ -136,7 +142,8 @@ export const Course = {
     },
     fromPartial<I extends Exact<DeepPartial<Course>, I>>(object: I): Course {
         const message = createBaseCourse();
-        message.classes = object.classes?.map((e) => Class.fromPartial(e)) || [];
+        message.classes =
+            object.classes?.map((e) => Class.fromPartial(e)) || [];
         return message;
     },
 };
@@ -146,7 +153,10 @@ function createBaseClass(): Class {
 }
 
 export const Class = {
-    encode(message: Class, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    encode(
+        message: Class,
+        writer: _m0.Writer = _m0.Writer.create(),
+    ): _m0.Writer {
         if (message.name !== '') {
             writer.uint32(10).string(message.name);
         }
@@ -157,7 +167,8 @@ export const Class = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Class {
-        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        const reader =
+            input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBaseClass();
         while (reader.pos < end) {
@@ -175,7 +186,9 @@ export const Class = {
                         break;
                     }
 
-                    message.schedule.push(Period.decode(reader, reader.uint32()));
+                    message.schedule.push(
+                        Period.decode(reader, reader.uint32()),
+                    );
                     continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
@@ -189,7 +202,9 @@ export const Class = {
     fromJSON(object: any): Class {
         return {
             name: isSet(object.name) ? globalThis.String(object.name) : '',
-            schedule: globalThis.Array.isArray(object?.schedule) ? object.schedule.map((e: any) => Period.fromJSON(e)) : [],
+            schedule: globalThis.Array.isArray(object?.schedule)
+                ? object.schedule.map((e: any) => Period.fromJSON(e))
+                : [],
         };
     },
 
@@ -210,7 +225,8 @@ export const Class = {
     fromPartial<I extends Exact<DeepPartial<Class>, I>>(object: I): Class {
         const message = createBaseClass();
         message.name = object.name ?? '';
-        message.schedule = object.schedule?.map((e) => Period.fromPartial(e)) || [];
+        message.schedule =
+            object.schedule?.map((e) => Period.fromPartial(e)) || [];
         return message;
     },
 };
@@ -220,7 +236,10 @@ function createBasePeriod(): Period {
 }
 
 export const Period = {
-    encode(message: Period, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    encode(
+        message: Period,
+        writer: _m0.Writer = _m0.Writer.create(),
+    ): _m0.Writer {
         if (message.name !== '') {
             writer.uint32(10).string(message.name);
         }
@@ -239,7 +258,8 @@ export const Period = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Period {
-        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        const reader =
+            input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = createBasePeriod();
         while (reader.pos < end) {
@@ -289,6 +309,11 @@ export const Period = {
             }
             reader.skipType(tag & 7);
         }
+
+        message.time = message.time.filter(
+            (e) => e !== undefined && e > 0,
+        ) as any;
+
         return message;
     },
 
@@ -296,7 +321,9 @@ export const Period = {
         return {
             name: isSet(object.name) ? globalThis.String(object.name) : '',
             day: isSet(object.day) ? weekdayFromJSON(object.day) : 0,
-            time: globalThis.Array.isArray(object?.time) ? object.time.map((e: any) => globalThis.Number(e)) : [],
+            time: globalThis.Array.isArray(object?.time)
+                ? object.time.map((e: any) => globalThis.Number(e))
+                : [],
             room: isSet(object.room) ? globalThis.String(object.room) : '',
         };
     },
@@ -326,23 +353,40 @@ export const Period = {
         const message = createBasePeriod();
         message.name = object.name ?? '';
         message.day = object.day ?? 0;
-        message.time = (object.time?.map((e) => e) || [0, 0]) as [number, number];
+        message.time = (object.time?.map((e) => e) || [0, 0]) as [
+            number,
+            number,
+        ];
         message.room = object.room ?? '';
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+    | Date
+    | Function
+    | Uint8Array
+    | string
+    | number
+    | boolean
+    | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-    : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-        : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-            : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-                : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+    ? T
+    : T extends globalThis.Array<infer U>
+      ? globalThis.Array<DeepPartial<U>>
+      : T extends ReadonlyArray<infer U>
+        ? ReadonlyArray<DeepPartial<U>>
+        : T extends {}
+          ? { [K in keyof T]?: DeepPartial<T[K]> }
+          : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-    : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+    ? P
+    : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+          [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+      };
 
 function isSet(value: any): boolean {
     return value !== null && value !== undefined;

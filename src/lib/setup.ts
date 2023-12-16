@@ -4,7 +4,11 @@ import '@sapphire/plugin-logger/register';
 import '@sapphire/plugin-scheduled-tasks/register';
 
 import dayjsParser from '../utils/dayjs-parser';
-import { container } from '@sapphire/framework';
+import {
+    ApplicationCommandRegistries,
+    container,
+    RegisterBehavior,
+} from '@sapphire/framework';
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr-ch';
@@ -35,3 +39,7 @@ initializeApp({
 
 container.database = getFirestore();
 container.redisClient = new IORedis(process.env.REDIS_URL ?? '');
+
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
+    RegisterBehavior.BulkOverwrite,
+);

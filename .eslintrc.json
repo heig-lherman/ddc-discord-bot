@@ -19,9 +19,12 @@
         "prettier/prettier": [
             "error"
         ],
-        "@typescript-eslint/no-unused-vars": ["error", {
-            "argsIgnorePattern": "^_"
-        }],
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ],
         "@typescript-eslint/explicit-member-accessibility": "off",
         "@typescript-eslint/no-object-literal-type-assertion": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
@@ -29,17 +32,18 @@
         "@typescript-eslint/camelcase": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": [
-            "error"
-        ],
+        "@typescript-eslint/no-use-before-define": "off",
         "class-methods-use-this": "off",
         "no-plusplus": "off",
-        "no-restricted-imports": ["error", {
-            "paths": [
-                "firebase-admin",
-                "firebase-admin/lib/*"
-            ]
-        }],
+        "no-restricted-imports": [
+            "error",
+            {
+                "paths": [
+                    "firebase-admin",
+                    "firebase-admin/lib/*"
+                ]
+            }
+        ],
         "no-restricted-syntax": "off",
         "no-shadow": "off",
         "no-underscore-dangle": "off",
@@ -58,12 +62,26 @@
                 "tsx": "never"
             }
         ],
-        "import/order": ["error", {
-            "groups": [["index", "sibling", "parent", "internal", "external", "builtin", "object", "type"]],
-            "alphabetize": {
-                "order": "asc"
+        "import/order": [
+            "error",
+            {
+                "groups": [
+                    [
+                        "index",
+                        "sibling",
+                        "parent",
+                        "internal",
+                        "external",
+                        "builtin",
+                        "object",
+                        "type"
+                    ]
+                ],
+                "alphabetize": {
+                    "order": "asc"
+                }
             }
-        }]
+        ]
     },
     "settings": {
         "import/resolver": {
