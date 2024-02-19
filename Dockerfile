@@ -26,4 +26,4 @@ COPY --chown=node:node --from=builder /usr/src/app/dist build
 COPY --chown=node:node --from=builder /usr/src/app/node_modules node_modules
 
 USER node
-CMD ["node", "build/src/bot.js"]
+CMD ["node", "build/bot.js"]
