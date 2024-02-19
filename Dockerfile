@@ -4,7 +4,8 @@ WORKDIR /usr/src/app
 ENV HUSKY=0 CI=true LOG_LEVEL=info
 
 RUN corepack enable
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node package.json .
+COPY --chown=node:node pnpm-lock.yaml .
 
 FROM base as builder
 ENV NODE_ENV="development"
@@ -13,7 +14,7 @@ COPY --chown=node:node tsconfig.json .
 COPY --chown=node:node scripts/ scripts/
 COPY --chown=node:node src/ src/
 
-RUN apk add --no-cache python3 make g++
+# RUN apk add --no-cache python3 make g++
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
