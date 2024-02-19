@@ -40,6 +40,7 @@ jobs:
         uses: reproducible-containers/buildkit-cache-dance@v2
         with:
           cache-source: pnpm-build-cache
+          cache-target: /pnpm/store
 
       - name: Build and push
         uses: docker/build-push-action@v5
