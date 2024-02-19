@@ -11,6 +11,7 @@ FROM base as builder
 ENV NODE_ENV="development"
 
 COPY --chown=node:node tsconfig.json .
+COPY --chown=node:node .sapphirerc.json .
 COPY --chown=node:node scripts/ scripts/
 COPY --chown=node:node src/ src/
 
