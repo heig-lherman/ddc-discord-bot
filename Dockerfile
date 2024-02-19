@@ -14,7 +14,7 @@ COPY --chown=node:node tsconfig.json .
 COPY --chown=node:node scripts/ scripts/
 COPY --chown=node:node src/ src/
 
-# RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python3 make g++
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
