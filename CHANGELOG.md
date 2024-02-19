@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.1](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.0...v1.6.1) (2024-02-19)
+
+
+### Bug Fixes
+
+* **docker:** incorrect entrypoint with new build process ([b57e1d1](https://github.com/Lutonite/heig-ddc-discord-bot/commit/b57e1d1e16b3e107b4ee0ab459d9a7e4c15ad09b))
+
 ## [1.6.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.5.0...v1.6.0) (2024-02-19)
 
 
