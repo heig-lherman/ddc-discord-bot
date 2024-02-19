@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.5.0...v1.6.0) (2024-02-19)
+
+
+### Features
+
+* **event:** add ability to create class events using channel info ([8cd1b95](https://github.com/Lutonite/heig-ddc-discord-bot/commit/8cd1b95864311106e6a7d76658c4de704881bdd5)), closes [#10](https://github.com/Lutonite/heig-ddc-discord-bot/issues/10)
+
+
+### Bug Fixes
+
+* **menus:** adapt for new top chef api ([ef253b5](https://github.com/Lutonite/heig-ddc-discord-bot/commit/ef253b582a4ce73ff022bf54c51442edbb39d307))
+
+
+### Others
+
+* bump sapphire framework to v5 ([feda5b3](https://github.com/Lutonite/heig-ddc-discord-bot/commit/feda5b3abc8d8e1740a011dbd2791bb8fe20d537))
+
 ## [1.5.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.4.1...v1.5.0) (2023-03-03)
 
 
