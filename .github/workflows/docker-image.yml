@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: pnpm cache for Docker
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: pnpm-build-cache
           key: ${{ runner.os }}-pnpm-build-cache-${{ hashFiles('**/pnpm-lock.yaml') }}
