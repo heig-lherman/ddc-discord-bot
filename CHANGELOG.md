@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.2](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.1...v1.6.2) (2024-02-19)
+
+
+### Bug Fixes
+
+* add framework config file in deployment ([005b2c1](https://github.com/Lutonite/heig-ddc-discord-bot/commit/005b2c11cf88494dc5758c912dae781925e75c93))
+* **docker:** move sapphire import to runner stage ([99e01b8](https://github.com/Lutonite/heig-ddc-discord-bot/commit/99e01b8a432ca63640af22d5e393347d3f6719d7))
+
 ### [1.6.1](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.0...v1.6.1) (2024-02-19)
 
 
