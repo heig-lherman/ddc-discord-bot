@@ -19,7 +19,7 @@ const listener = new EventSubHttpListener({
     apiClient,
     adapter: new ReverseProxyAdapter({
         hostName: process.env.TWITCH_EVENTSUB_DOMAIN ?? '',
-        port: Number(process.env.TWITCH_EVENTSUB_PORT ?? 8080),
+        port: Number(process.env.TWITCH_EVENTSUB_LISTEN_PORT ?? 8080),
     }),
     secret: process.env.TWITCH_SUBSCRIPTION_SECRET ?? '',
     strictHostCheck: true,
