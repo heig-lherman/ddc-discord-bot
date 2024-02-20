@@ -28,7 +28,7 @@ const client = new SapphireClient({
         bull: {
             connection: {
                 host: host ?? '',
-                port: port ?? 0,
+                port: port ?? 6379,
                 password: password ?? '',
                 db: db ?? 0,
             },
