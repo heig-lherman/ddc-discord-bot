@@ -6,7 +6,8 @@
         "commands": "commands",
         "listeners": "listeners",
         "preconditions": "preconditions",
-        "interaction-handlers": "interaction-handlers"
+        "interaction-handlers": "interaction-handlers",
+        "scheduled-tasks": "scheduled-tasks"
     },
     "customFileTemplates": {
         "enabled": false,

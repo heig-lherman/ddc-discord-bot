@@ -40,7 +40,7 @@
         "@sapphire/utilities": "^3.15.3",
         "@twurple/api": "^7.0.10",
         "@twurple/auth": "^7.0.10",
-        "@twurple/eventsub-ws": "^7.0.10",
+        "@twurple/eventsub-http": "^7.0.10",
         "any-date-parser": "^1.5.4",
         "bufferutil": "^4.0.8",
         "bullmq": "^5.2.1",
