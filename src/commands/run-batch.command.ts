@@ -23,7 +23,7 @@ export default class RunBatchCommand extends Command {
             return;
         }
 
-        batch.run({});
+        batch.run(undefined);
         await reply(message, {
             embeds: [successEmbed('Done.')],
         });
