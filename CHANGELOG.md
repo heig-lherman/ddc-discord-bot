@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.3](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.2...v1.6.3) (2024-02-20)
+
+
+### Bug Fixes
+
+* **events:** force tz to europe/zurich when building from mil time ([f0e404c](https://github.com/Lutonite/heig-ddc-discord-bot/commit/f0e404cf31b379bc30f1edd1a07105abc1db2a5b)), closes [#21](https://github.com/Lutonite/heig-ddc-discord-bot/issues/21)
+* **events:** make delete interaction deferable on cache miss ([3167520](https://github.com/Lutonite/heig-ddc-discord-bot/commit/316752091a9350bb0f4567402d9b7e055422c51d))
+* redis default port for bull should be 6379 ([950e22a](https://github.com/Lutonite/heig-ddc-discord-bot/commit/950e22a76b4de1eaeec751a7506eb78da881b443))
+* **twitch:** listen port environment variable name mismatch ([7e0cf52](https://github.com/Lutonite/heig-ddc-discord-bot/commit/7e0cf522a61ceea068f787d807c1404058dc1699))
+
+
+### Reverts
+
+* **twitch:** use eventsub over http due to incompatibility with websockets ([8f3cf3b](https://github.com/Lutonite/heig-ddc-discord-bot/commit/8f3cf3b4054c50879a72bc6537fb9fa68a2439df))
+
+
+### Others
+
+* **deps:** bump dependencies ([6ea03c9](https://github.com/Lutonite/heig-ddc-discord-bot/commit/6ea03c9c3a79b6c4e2b85e88b08d6b0b8fef3656))
+
 ### [1.6.2](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.1...v1.6.2) (2024-02-19)
 
 
