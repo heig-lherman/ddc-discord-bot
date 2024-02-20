@@ -278,17 +278,18 @@ export default class EventCommand extends Subcommand {
     }
 
     async deleteEvent(interaction: Subcommand.ChatInputCommandInteraction) {
+        const reply = await interaction.deferReply({ ephemeral: true });
         try {
             await interaction.guild?.scheduledEvents.delete(
                 interaction.options.getString('id', true),
             );
 
-            return interaction.reply({
+            return reply.edit({
                 embeds: [successEmbed('Event successfully deleted')],
             });
         } catch (e) {
             this.container.logger.error(e);
-            return interaction.reply({
+            return reply.edit({
                 embeds: [
                     errorEmbed('An issue occured while deleting the event'),
                 ],
