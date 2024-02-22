@@ -2,6 +2,7 @@ import '@sapphire/plugin-editable-commands/register';
 import '@sapphire/plugin-hmr/register';
 import '@sapphire/plugin-logger/register';
 import '@sapphire/plugin-scheduled-tasks/register';
+import '@sapphire/plugin-subcommands/register';
 
 import dayjsParser from '../utils/dayjs-parser';
 import {
@@ -9,8 +10,8 @@ import {
     container,
     RegisterBehavior,
 } from '@sapphire/framework';
-
 import dayjs from 'dayjs';
+
 import 'dayjs/locale/fr-ch';
 import duration from 'dayjs/plugin/duration';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -22,8 +23,6 @@ import weekday from 'dayjs/plugin/weekday';
 
 import { cert, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-
-import IORedis from 'ioredis';
 
 dayjs.extend(utc);
 dayjs.extend(weekOfYear);
@@ -40,8 +39,6 @@ initializeApp({
 });
 
 container.database = getFirestore();
-container.redisClient = new IORedis(process.env.REDIS_URL ?? '');
-
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
     RegisterBehavior.BulkOverwrite,
 );

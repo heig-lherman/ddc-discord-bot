@@ -3,10 +3,9 @@ import 'dotenv/config';
 import './lib/setup';
 
 import { subscribeTwitchEvents } from './services/twitch-events.service';
-import { container, LogLevel, SapphireClient } from '@sapphire/framework';
+import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
 
-const { host, port, password, db } = container.redisClient.options;
 const client = new SapphireClient({
     defaultPrefix: '!',
     intents: [
@@ -26,17 +25,22 @@ const client = new SapphireClient({
     tasks: {
         bull: {
             connection: {
-                host: host ?? '',
-                port: port ?? 6379,
-                password: password ?? '',
-                db: db ?? 0,
+                host: process.env.REDIS_HOST ?? 'localhost',
+                port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
+                password: process.env.REDIS_PASSWORD,
+                db: parseInt(process.env.REDIS_DB ?? '0', 10),
             },
-            prefix: 'ddc.queue-',
+            defaultJobOptions: {
+                removeOnComplete: true,
+                removeOnFail: true,
+            },
         },
+        queue: 'ddc-tasks',
     },
     loadMessageCommandListeners: true,
     loadDefaultErrorListeners: true,
     loadSubcommandErrorListeners: true,
+    loadScheduledTaskErrorListeners: true,
 });
 
 const main = async () => {
@@ -58,8 +62,6 @@ const main = async () => {
 
             subscribeTwitchEvents(client).catch(client.logger.error);
         });
-
-        client.logger.info('logged in');
     } catch (error) {
         client.logger.fatal(error);
         client.destroy();

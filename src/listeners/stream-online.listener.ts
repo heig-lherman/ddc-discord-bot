@@ -1,28 +1,28 @@
+import { guildRef } from '../database/guild-data';
 import { ApplyOptions } from '@sapphire/decorators';
-import { isTextChannel } from '@sapphire/discord.js-utilities';
 import { Listener } from '@sapphire/framework';
 import type { EventSubStreamOnlineEvent } from '@twurple/eventsub-base';
-import { type Snowflake, EmbedBuilder } from 'discord.js';
-
-const GUILDS: { id: Snowflake; channel: Snowflake }[] = [
-    { id: '887670429760749569', channel: '981888025095196702' },
-];
+import { EmbedBuilder, Snowflake } from 'discord.js';
+import { getDocs } from 'firelord';
 
 @ApplyOptions<Listener.Options>({
     event: 'streamOnline',
 })
 export default class StreamOnlineListener extends Listener {
-    async run(event: EventSubStreamOnlineEvent): Promise<unknown> {
-        const { client } = this.container;
+    async run(event: EventSubStreamOnlineEvent) {
+        const guilds = await getDocs(guildRef.collection()).then((docs) =>
+            docs.docs
+                .filter((d) => !!d.data().channels?.stream)
+                .map((doc) => ({
+                    id: doc.id,
+                    channel: doc.data().channels.stream!,
+                })),
+        );
 
         const stream = await event.getStream();
         const game = await stream?.getGame();
 
         const streamUrl = `https://www.twitch.tv/${event.broadcasterName}`;
-
-        const channels = GUILDS.map((sfs) =>
-            client.channels.cache.get(sfs.channel),
-        );
 
         const embed = new EmbedBuilder()
             .setColor('#9146FF')
@@ -42,15 +42,37 @@ export default class StreamOnlineListener extends Listener {
 
         embed.setImage(stream?.thumbnailUrl ?? null);
 
-        return channels.map((channel) => {
-            if (channel && isTextChannel(channel)) {
-                return channel.send({
-                    content: '<@&981902175850602566>',
-                    embeds: [embed],
-                });
-            }
+        await Promise.all(
+            guilds.map(async ({ id, channel }) =>
+                this.handleGuildMessage(id, channel, embed),
+            ),
+        );
+    }
 
-            return Promise.resolve();
+    private async handleGuildMessage(
+        guildId: Snowflake,
+        channelId: Snowflake,
+        embed: EmbedBuilder,
+    ) {
+        const { client, logger } = this.container;
+
+        const guild = await client.guilds.fetch(guildId);
+        if (!guild) {
+            logger.debug(`Could not find guild with id ${guildId}`);
+            return;
+        }
+
+        const channel = await guild.channels.fetch(channelId);
+        if (!channel || !channel.isTextBased()) {
+            logger.debug(
+                `Could not find menus channel in guild ${guild.toString()}.`,
+            );
+            return;
+        }
+
+        await channel.send({
+            content: '<@&981902175850602566>',
+            embeds: [embed],
         });
     }
 }
