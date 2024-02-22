@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.1](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.7.0...v1.7.1) (2024-02-22)
+
+
+### Bug Fixes
+
+* **events:** timezone conversion issue (day/month inversion) with dayjs ([d03ad35](https://github.com/Lutonite/heig-ddc-discord-bot/commit/d03ad357adfeb2cff5b312781b9196b492d02789))
+
 ## [1.7.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.3...v1.7.0) (2024-02-22)
 
 
