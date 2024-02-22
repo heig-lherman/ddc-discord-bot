@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.3...v1.7.0) (2024-02-22)
+
+
+### Features
+
+* **events:** edit subcommand to change event title and description ([601ea32](https://github.com/Lutonite/heig-ddc-discord-bot/commit/601ea32c7c1dbc578b2bf6ae72749ccb200a804e)), closes [#22](https://github.com/Lutonite/heig-ddc-discord-bot/issues/22)
+
+
+### Bug Fixes
+
+* **events:** creation date wrongly inferred on utc timezone ([47ee1fc](https://github.com/Lutonite/heig-ddc-discord-bot/commit/47ee1fcb57ccbe5bc7cd25c8f38d5827631bfdb7))
+* **hmr:** disable hot module reload on non-development node context ([5735aae](https://github.com/Lutonite/heig-ddc-discord-bot/commit/5735aae6c370b9956a1305c3f5cb224ab785e5e1))
+
 ### [1.6.3](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.6.2...v1.6.3) (2024-02-20)
 
 
