@@ -236,7 +236,7 @@ export default class EventCommand extends Subcommand {
                 return undefined;
             }
 
-            const day = dayjs(dateSelectInteraction.values[0]);
+            const day = dayjs(dateSelectInteraction.values[0], 'DD/MM/YYYY');
             const startDate = setDatetimeFromInt(day, selectedPeriod.time[0]);
             const endDate = setDatetimeFromInt(day, selectedPeriod.time[1]);
 
