@@ -49,6 +49,10 @@ const stages = [
             chatInputRun: 'createEvent',
         },
         {
+            name: 'edit',
+            chatInputRun: 'editEvent',
+        },
+        {
             name: 'delete',
             chatInputRun: 'deleteEvent',
         },
@@ -65,6 +69,17 @@ export default class EventCommand extends Subcommand {
                         command
                             .setName('create')
                             .setDescription('Create a new event'),
+                    )
+                    .addSubcommand((command) =>
+                        command
+                            .setName('edit')
+                            .setDescription('Edit an event')
+                            .addStringOption((option) =>
+                                option
+                                    .setName('id')
+                                    .setDescription('The event ID')
+                                    .setRequired(true),
+                            ),
                     )
                     .addSubcommand((command) =>
                         command
@@ -277,6 +292,73 @@ export default class EventCommand extends Subcommand {
         }
     }
 
+    async editEvent(interaction: Subcommand.ChatInputCommandInteraction) {
+        try {
+            const event = await interaction.guild?.scheduledEvents.fetch(
+                interaction.options.getString('id', true),
+            );
+
+            if (!event) {
+                return interaction.reply({
+                    embeds: [errorEmbed('No event found with this ID')],
+                    ephemeral: true,
+                });
+            }
+
+            const contentModal = new ModalBuilder()
+                .setCustomId(ids.modal.id)
+                .setTitle('Event details')
+                .addComponents(
+                    new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId(ids.modal.title)
+                            .setLabel('Event title')
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                            .setValue(event.name),
+                    ),
+                    new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId(ids.modal.description)
+                            .setLabel('Event description')
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(false)
+                            .setValue(event.description ?? ''),
+                    ),
+                );
+
+            await interaction.showModal(contentModal);
+            const modalInteraction = await interaction.awaitModalSubmit({
+                time: 1000 * 60 * 5,
+            });
+
+            const updatedEvent = await event.edit({
+                name: modalInteraction.fields.getField(ids.modal.title).value,
+                description: modalInteraction.fields.getField(
+                    ids.modal.description,
+                ).value,
+            });
+
+            return await modalInteraction.reply({
+                content: stripIndent`
+                    :white_check_mark: Event updated
+
+                    :link: [View event](${updatedEvent.url})
+                    ID: \`${updatedEvent.id}\`
+                `,
+            });
+        } catch (e) {
+            this.container.logger.error(e);
+            return interaction.followUp({
+                embeds: [
+                    errorEmbed(
+                        'Builder canceled, no interaction within timeout',
+                    ),
+                ],
+            });
+        }
+    }
+
     async deleteEvent(interaction: Subcommand.ChatInputCommandInteraction) {
         const reply = await interaction.deferReply({ ephemeral: true });
         try {
@@ -291,7 +373,7 @@ export default class EventCommand extends Subcommand {
             this.container.logger.error(e);
             return reply.edit({
                 embeds: [
-                    errorEmbed('An issue occured while deleting the event'),
+                    errorEmbed('An issue occurred while deleting the event'),
                 ],
             });
         }
