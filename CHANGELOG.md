@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.2](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.7.1...v1.7.2) (2024-02-22)
+
+
+### Bug Fixes
+
+* **events:** timezone still wasn't parsed properly ([745d2d4](https://github.com/Lutonite/heig-ddc-discord-bot/commit/745d2d47302304565dd2e4b3c887431861914919))
+* **tasks:** remove bull prefix as unsupported & fix task cache usage ([9d05c4e](https://github.com/Lutonite/heig-ddc-discord-bot/commit/9d05c4e2e62682643f0297c95934f5c3a35c375a))
+
 ### [1.7.1](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.7.0...v1.7.1) (2024-02-22)
 
 
