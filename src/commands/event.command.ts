@@ -236,7 +236,7 @@ export default class EventCommand extends Subcommand {
                 return undefined;
             }
 
-            const day = dayjs(
+            const day = dayjs.tz(
                 dateSelectInteraction.values[0],
                 'DD/MM/YYYY',
                 'Europe/Zurich',
