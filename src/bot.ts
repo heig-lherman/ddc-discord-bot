@@ -21,9 +21,8 @@ const client = new SapphireClient({
         GatewayIntentBits.GuildScheduledEvents,
         GatewayIntentBits.MessageContent,
     ],
-    logger: {
-        level: LogLevel.Debug,
-    },
+    logger: { level: LogLevel.Debug },
+    hmr: { enabled: process.env.NODE_ENV === 'development' },
     tasks: {
         bull: {
             connection: {
