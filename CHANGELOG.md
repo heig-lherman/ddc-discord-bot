@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.3](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.7.2...v1.7.3) (2024-09-17)
+
+
+### Bug Fixes
+
+* add more weeks to event creator ([5407d9c](https://github.com/Lutonite/heig-ddc-discord-bot/commit/5407d9c0853c81f4e0be15c4758890e8d2607888))
+* bump dependencies ([f9161ac](https://github.com/Lutonite/heig-ddc-discord-bot/commit/f9161acb592714c5a8cf9ae33a4a52a47a15561a))
+
 ### [1.7.2](https://github.com/Lutonite/heig-ddc-discord-bot/compare/v1.7.1...v1.7.2) (2024-02-22)
 
 
