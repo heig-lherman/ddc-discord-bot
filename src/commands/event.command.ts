@@ -428,7 +428,7 @@ const getNextDates = (period: Period): StringSelectMenuOptionBuilder[] => {
     const today = dayjs().utc().startOf('day');
     const nextDates = [];
 
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 20; i++) {
         const date = today.add(i, 'week').weekday(period.day - 1);
         nextDates.push(
             new StringSelectMenuOptionBuilder()
